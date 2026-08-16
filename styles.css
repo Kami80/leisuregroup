@@ -6181,342 +6181,382 @@ body{
 
 
 /* =========================================================
-   CAFE MENU — FINAL UX ENHANCEMENT
+   QUICK ADD BUTTON — CENTERED RETRO-NEU REFINEMENT
    ========================================================= */
-
-/* Context line makes filters/search state explicit. */
-.cafe-menu-context{
-  min-height:38px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin:4px 0 12px;
-  padding:7px 10px;
-  border:1.5px dashed rgba(16,38,59,.5);
-  border-radius:8px;
-  background:rgba(255,249,237,.72);
-  color:var(--muted);
-  font-size:9px;
-}
-.cafe-menu-context>span{
-  min-width:0;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-.cafe-menu-context__reset{
-  flex:none;
-  border:0;
-  background:transparent;
-  color:var(--coral);
-  font:inherit;
-  font-weight:900;
-  text-decoration:underline;
-  text-underline-offset:3px;
-}
-.cafe-menu-context__reset[hidden]{display:none}
-
-/* Quick intent filters communicate their toggled state. */
-.cafe-quick-pills button.is-active{
-  background:var(--yellow)!important;
+.cafe-menu-card__quickadd{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  display:grid!important;
+  place-items:center!important;
+  align-items:center!important;
+  justify-items:center!important;
+  padding:0!important;
+  margin:0!important;
+  border:1.5px solid var(--ink)!important;
+  border-radius:50%!important;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255,255,255,.72), rgba(255,255,255,0) 42%),
+    linear-gradient(180deg, #fff7e7 0%, #f6ead4 100%)!important;
   color:var(--ink)!important;
-  box-shadow:3px 3px 0 var(--ink);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.75),
+    inset -2px -2px 0 rgba(16,38,59,.08),
+    3px 3px 0 var(--ink)!important;
+  font-size:18px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  text-align:center!important;
+  vertical-align:middle!important;
+  transform:none;
+  transition:
+    transform .16s var(--ease-spring),
+    box-shadow .16s ease,
+    background .16s ease;
+}
+.cafe-menu-card__quickadd::before{
+  content:"+";
+  display:block;
+  line-height:1;
   transform:translateY(-1px);
 }
-
-/* Menu cards now expose cart state instead of hiding it. */
-.cafe-menu-card.has-cart-item{
-  box-shadow:6px 6px 0 var(--teal);
+.cafe-menu-card__quickadd{
+  font-size:0!important; /* hide any off-center text glyph and use ::before instead */
 }
-.cafe-menu-card__cartbadge{
-  position:absolute;
-  z-index:5;
-  right:10px;
-  bottom:10px;
-  min-width:34px;
-  height:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:3px;
-  padding:0 8px;
-  border:2px solid var(--ink);
-  border-radius:999px;
-  background:var(--teal);
-  color:var(--ink);
-  box-shadow:2px 2px 0 var(--ink);
-  font-size:9px;
-  font-weight:900;
+.cafe-menu-card__quickadd:hover{
+  transform:translateY(-1px);
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255,255,255,.82), rgba(255,255,255,0) 42%),
+    linear-gradient(180deg, #fff9ed 0%, #f8e2ab 100%)!important;
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.82),
+    inset -2px -2px 0 rgba(16,38,59,.07),
+    4px 4px 0 var(--ink)!important;
 }
-.cafe-menu-card__details{
-  min-height:34px;
-  padding:4px 9px;
-  border:0;
-  background:transparent;
-  color:var(--muted);
-  font-size:9px;
-  font-weight:900;
-  text-decoration:underline;
-  text-underline-offset:4px;
+.cafe-menu-card__quickadd:active{
+  transform:translate(1px,1px);
+  box-shadow:
+    inset 1px 1px 0 rgba(255,255,255,.72),
+    inset -1px -1px 0 rgba(16,38,59,.08),
+    1px 1px 0 var(--ink)!important;
+}
+.cafe-menu-card__quickadd:focus-visible{
+  outline:3px solid var(--teal);
+  outline-offset:3px;
 }
 .cafe-menu-card__actions{
-  margin-right:auto;
-}
-.cafe-menu-card__choose-line{
-  min-height:36px;
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  padding:5px 10px;
-  border:1.5px solid var(--ink);
-  border-radius:8px;
-  background:var(--yellow);
-  color:var(--ink);
-  box-shadow:2px 2px 0 var(--ink);
-  font-size:9px;
-  font-weight:900;
+  justify-content:flex-end;
 }
-.cafe-menu-card__choose-line b{
-  font-size:15px;
-  line-height:1;
-}
-.cafe-card-stepper{
-  display:grid;
-  grid-template-columns:32px 26px 32px;
-  align-items:center;
-  justify-content:end;
-  gap:4px;
-  direction:ltr;
-}
-.cafe-card-stepper button{
-  width:32px;
-  height:32px;
-  display:grid;
-  place-items:center;
-  padding:0;
-  border:1.5px solid var(--ink);
-  border-radius:8px;
-  background:#FFF9ED;
-  color:var(--ink);
-  box-shadow:2px 2px 0 var(--ink);
-  font-size:15px;
-  font-weight:900;
-}
-.cafe-card-stepper button:last-child{
-  background:var(--yellow);
-}
-.cafe-card-stepper b{
-  text-align:center;
-  font-size:11px;
-}
-
-/* Undo snackbar — prevents accidental cart additions from feeling costly. */
-.cafe-undo-toast{
-  position:fixed;
-  z-index:18000;
-  right:50%;
-  bottom:26px;
-  width:min(440px,calc(100% - 28px));
-  min-height:50px;
-  display:grid;
-  grid-template-columns:1fr auto;
-  align-items:center;
-  gap:10px;
-  padding:8px 10px 8px 14px;
-  border:2px solid rgba(255,249,237,.7);
-  border-radius:12px;
-  background:rgba(16,38,59,.94);
-  color:var(--cream-2);
-  -webkit-backdrop-filter:blur(18px) saturate(1.12);
-  backdrop-filter:blur(18px) saturate(1.12);
-  box-shadow:5px 5px 0 var(--coral),0 18px 38px rgba(16,38,59,.2);
-  opacity:0;
-  transform:translate(50%,18px);
-  pointer-events:none;
-  transition:opacity .2s ease,transform .28s var(--ease-out);
-}
-.cafe-undo-toast.is-visible{
-  opacity:1;
-  transform:translate(50%,0);
-  pointer-events:auto;
-}
-.cafe-undo-toast>span{
-  font-size:10px;
-  font-weight:800;
-}
-.cafe-undo-toast button{
-  min-height:34px;
-  padding:5px 10px;
-  border:1.5px solid var(--ink);
-  border-radius:7px;
-  background:var(--yellow);
-  color:var(--ink);
-  box-shadow:2px 2px 0 var(--coral);
-  font-size:9px;
-  font-weight:900;
-}
-
-/* Empty state gets a clear recovery action. */
-.cafe-empty__reset{
-  margin-top:14px;
-}
-
-/* Order rows reveal actual line total at a glance. */
-.cafe-order-row__price{
-  font-weight:800;
-}
-
-/* Product popup action feels transactional rather than generic. */
-.cafe-item-sheet__add{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  white-space:nowrap;
-}
-
-/* Search state is easier to perceive. */
-.cafe-search:focus-within{
-  box-shadow:6px 7px 0 var(--teal);
-  transform:translateY(-1px);
-}
-
-/* Active category remains visually clear during scroll-spy. */
-.cafe-category-tabs button[aria-pressed="true"]{
-  position:relative;
-}
-.cafe-category-tabs button[aria-pressed="true"]::after{
-  content:"";
-  position:absolute;
-  right:16%;
-  left:16%;
-  bottom:-5px;
-  height:3px;
-  border-radius:99px;
-  background:var(--ink);
-}
-
-/* Desktop hover/press polish */
-@media(hover:hover){
-  .cafe-menu-card__details:hover{
-    color:var(--ink);
+@media(max-width:760px){
+  .cafe-menu-card__quickadd{
+    width:29px!important;
+    height:29px!important;
+    min-width:29px!important;
+    min-height:29px!important;
+    box-shadow:
+      inset 1px 1px 0 rgba(255,255,255,.72),
+      inset -1px -1px 0 rgba(16,38,59,.07),
+      2px 2px 0 var(--ink)!important;
   }
-  .cafe-menu-card__choose-line:hover,
-  .cafe-card-stepper button:hover,
-  .cafe-undo-toast button:hover{
+  .cafe-menu-card__quickadd::before{
+    font-size:16px;
     transform:translateY(-1px);
-    box-shadow:3px 3px 0 var(--ink);
   }
+}
+
+
+/* =========================================================
+   CAFE VERTICAL SCROLL STABILITY
+   ========================================================= */
+@media(max-width:760px){
+  #cafeCategoryTabs,
+  .cafe-category-tabs{
+    /* allow both horizontal finger swipes and normal vertical page scroll */
+    touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:contain;
+    overscroll-behavior-y:auto!important;
+  }
+
+  .cafe-category-float-shell{
+    overscroll-behavior:auto!important;
+  }
+
+  .cafe-menu-shell,
+  .cafe-menu-layout,
+  #cafeMenuGrid{
+    overflow-y:visible!important;
+    max-height:none!important;
+  }
+}
+
+/* A stale modal class must never lock the page when no sheet is open. */
+body.cafe-page:not(.cafe-sheet-open){
+  overflow-y:auto!important;
+  height:auto!important;
+}
+
+
+/* =========================================================
+   FINAL TYPOGRAPHY SAFETY — PERSIAN / MOBILE
+   Prevent multi-line display headings and mixed RTL text from colliding.
+   ========================================================= */
+:where(
+  .hero h1,
+  .cafe-hero h1,
+  .discover-archive-hero h1,
+  .game-hero-v2__content h1,
+  .section-head h2,
+  .tables__intro h2,
+  .magazine-masthead h2,
+  .discover-showcase__title h2,
+  .city-guide-section__head h2,
+  .game-section-v2__head h2,
+  .game-final-cta h2,
+  .home-cafe-callout__copy h2
+){
+  text-wrap:balance;
+  overflow-wrap:break-word;
+  word-break:normal;
+}
+
+.hero h1,
+.cafe-hero h1,
+.discover-archive-hero h1,
+.game-hero-v2__content h1{
+  line-height:1.03!important;
+}
+
+.section-head h2,
+.tables__intro h2,
+.magazine-masthead h2,
+.discover-showcase__title h2,
+.city-guide-section__head h2,
+.game-section-v2__head h2,
+.game-final-cta h2,
+.home-cafe-callout__copy h2{
+  line-height:1.08!important;
+}
+
+/* Decorative text must remain visually behind real content. */
+.hero-poster,
+.home-cafe-callout__art,
+.about-hero-photo,
+.community-hero-photo{
+  isolation:isolate;
+}
+.hero-poster::before,
+.home-cafe-callout__art::before{
+  z-index:0!important;
+  pointer-events:none;
+}
+.hero-poster > *,
+.home-cafe-callout__art > *{
+  position:relative;
+  z-index:1;
+}
+
+/* Prevent grid/flex children from forcing text outside their own column. */
+:where(
+  .hero__grid,
+  .cafe-hero__grid,
+  .game-hero-v2,
+  .section-head,
+  .city-guide-section__head,
+  .home-cafe-callout__grid
+) > *{
+  min-width:0;
+}
+
+/* Persian buttons should wrap deliberately instead of colliding. */
+:where(.btn,button,.branch-map-btn,.game-db-card__primary,.table-interest){
+  white-space:normal;
+  line-height:1.45;
+  text-align:center;
 }
 
 @media(max-width:760px){
-  /* Context is compact and follows the rail without becoming another glass panel. */
-  .cafe-menu-context{
-    min-height:31px;
-    margin:0 0 9px;
-    padding:5px 7px;
-    border:0;
-    border-bottom:1px dashed rgba(16,38,59,.38);
-    border-radius:0;
-    background:transparent;
-    font-size:8px;
+  .hero h1,
+  .cafe-hero h1,
+  .discover-archive-hero h1,
+  .game-hero-v2__content h1{
+    font-size:clamp(40px,11.5vw,58px)!important;
+    line-height:1.12!important;
+    letter-spacing:-.018em!important;
   }
 
-  .cafe-menu-card.has-cart-item{
-    box-shadow:4px 4px 0 var(--teal)!important;
-  }
-  .cafe-menu-card__cartbadge{
-    right:7px;
-    bottom:7px;
-    min-width:29px;
-    height:23px;
-    padding-inline:6px;
-    border-width:1.5px;
-    font-size:7px;
-    box-shadow:1px 1px 0 var(--ink);
-  }
-
-  .cafe-menu-card__foot{
-    min-height:36px;
-  }
-  .cafe-menu-card__details{
-    min-height:30px;
-    padding:3px 5px;
-    font-size:7px;
-  }
-  .cafe-menu-card__choose-line{
-    min-height:31px;
-    max-width:100%;
-    padding:4px 7px;
-    gap:5px;
-    border-radius:7px;
-    font-size:7px;
-    box-shadow:1px 1px 0 var(--ink);
-  }
-  .cafe-menu-card__choose-line b{
-    font-size:12px;
+  .section-head h2,
+  .tables__intro h2,
+  .magazine-masthead h2,
+  .discover-showcase__title h2,
+  .city-guide-section__head h2,
+  .game-section-v2__head h2,
+  .game-final-cta h2,
+  .home-cafe-callout__copy h2{
+    font-size:clamp(30px,8.8vw,44px)!important;
+    line-height:1.16!important;
+    letter-spacing:-.012em!important;
   }
 
-  .cafe-card-stepper{
-    grid-template-columns:27px 22px 27px;
-    gap:3px;
-  }
-  .cafe-card-stepper button{
-    width:27px;
-    height:27px;
-    border-radius:7px;
-    box-shadow:1px 1px 0 var(--ink);
-    font-size:13px;
-  }
-  .cafe-card-stepper b{
-    font-size:9px;
-  }
-
-  /* Snackbar sits above bottom navigation + floating cart. */
-  .cafe-undo-toast{
-    bottom:calc(142px + env(safe-area-inset-bottom));
-    min-height:46px;
-    border-radius:12px;
-    padding:7px 8px 7px 11px;
-  }
-  .cafe-undo-toast>span{
-    font-size:9px;
-  }
-  .cafe-undo-toast button{
-    min-height:31px;
-    font-size:8px;
-  }
-
-  /* Make cart rows more compact without losing tap targets. */
-  .cafe-order-row{
-    border-radius:9px;
-  }
-
-  /* Search bar remains an easy target when the bottom-nav search action jumps here. */
-  .cafe-search input{
-    font-size:14px!important;
+  :where(
+    .hero p,
+    .cafe-hero__copy > p,
+    .section-head p,
+    .city-guide-section__head p,
+    .home-cafe-callout__copy p
+  ){
+    line-height:1.9!important;
   }
 }
 
-@media(max-width:390px){
-  .cafe-card-stepper{
-    grid-template-columns:25px 18px 25px;
+@media(max-width:420px){
+  .hero h1,
+  .cafe-hero h1,
+  .discover-archive-hero h1,
+  .game-hero-v2__content h1{
+    font-size:clamp(36px,11vw,48px)!important;
+    line-height:1.14!important;
   }
-  .cafe-card-stepper button{
-    width:25px;
-    height:25px;
+}
+
+
+/* =========================================================
+   CONTACT MAP — SYNCHRONIZED INTERACTIVE LOCATIONS
+   ========================================================= */
+.contact-map-tab{
+  position:relative;
+}
+.contact-map-tab::after{
+  content:"";
+  position:absolute;
+  inset:auto 10px 7px 10px;
+  height:3px;
+  border-radius:999px;
+  background:var(--ink);
+  opacity:0;
+  transform:scaleX(.35);
+  transition:opacity .18s ease,transform .22s var(--ease-out);
+}
+.contact-map-tab.is-active::after,
+.contact-map-tab[aria-pressed="true"]::after{
+  opacity:1;
+  transform:scaleX(1);
+}
+.contact-map-tab.is-active,
+.contact-map-tab[aria-pressed="true"]{
+  background:var(--yellow)!important;
+  box-shadow:5px 5px 0 var(--ink);
+  z-index:2;
+}
+.contact-map-tab:focus-visible{
+  outline:3px solid var(--coral);
+  outline-offset:3px;
+}
+
+.contact-map-detail__english{
+  display:block;
+  width:max-content;
+  max-width:100%;
+  margin:0 0 4px;
+  color:var(--coral);
+  font:11px/1.2 var(--font-en);
+  letter-spacing:.15em;
+  text-transform:uppercase;
+}
+.contact-map-detail__phones{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:15px;
+}
+.contact-map-detail__phones a{
+  direction:ltr;
+  display:inline-flex;
+  align-items:center;
+  min-height:32px;
+  padding:5px 9px;
+  border:1.5px solid var(--ink);
+  border-radius:999px;
+  background:var(--stone);
+  color:var(--ink);
+  box-shadow:2px 2px 0 var(--ink);
+  font:10px/1 var(--font-en);
+  text-decoration:none;
+}
+.contact-map-detail__phones a::before{
+  content:"☎";
+  margin-right:5px;
+  font-family:var(--font-fa-ui);
+}
+
+.branch-map-btn--show.is-active,
+.branch-map-btn--show[aria-pressed="true"]{
+  background:var(--yellow);
+  color:var(--ink);
+  box-shadow:3px 3px 0 var(--ink);
+}
+.branch-card--map.is-map-active{
+  outline:3px solid var(--coral);
+  outline-offset:4px;
+}
+
+/* Map update should read as a deliberate state transition, not a stale iframe. */
+.contact-map-frame.is-updating{
+  opacity:.35!important;
+  filter:saturate(.4) contrast(.95) blur(.3px)!important;
+}
+.contact-map-loading{
+  white-space:nowrap;
+}
+
+/* A tiny color rail ties selector -> map -> detail together. */
+.contact-map-explorer{
+  --active-map-accent:var(--yellow);
+}
+.contact-map-explorer[data-active-branch="apadana"]{--active-map-accent:var(--yellow)}
+.contact-map-explorer[data-active-branch="kashani"]{--active-map-accent:var(--teal)}
+.contact-map-explorer[data-active-branch="khaneh-isfahan"]{--active-map-accent:var(--coral)}
+.contact-map-explorer[data-active-branch="ji"]{--active-map-accent:var(--mint)}
+.contact-map-frame-wrap::after{
+  content:"";
+  position:absolute;
+  z-index:5;
+  top:0;
+  right:0;
+  left:0;
+  height:6px;
+  background:var(--active-map-accent);
+  border-bottom:2px solid var(--ink);
+  pointer-events:none;
+  transition:background .2s ease;
+}
+
+@media(max-width:720px){
+  .contact-map-tabs{
+    position:relative;
+    gap:8px;
   }
-  .cafe-menu-card__details{
-    display:none;
+  .contact-map-tab{
+    min-height:76px;
+    padding:9px;
+  }
+  .contact-map-tab.is-active,
+  .contact-map-tab[aria-pressed="true"]{
+    transform:translateY(-2px)!important;
+  }
+  .contact-map-detail__phones{
+    margin-top:12px;
   }
 }
 
 @media(prefers-reduced-motion:reduce){
-  .cafe-undo-toast,
-  .cafe-menu-card__choose-line,
-  .cafe-card-stepper button{
+  .contact-map-tab,
+  .contact-map-tab::after,
+  .contact-map-frame,
+  .contact-map-frame-wrap::after{
     transition:none!important;
   }
 }

@@ -216,3 +216,114 @@
 .event-poster-large__date,.event-poster-large__title{z-index:2;background:rgba(255,249,237,.88);color:var(--ink);margin:20px;padding:10px;border:2px solid var(--ink)}
 .asset-credit{font-size:10px;color:var(--muted);margin-top:8px}
 @media(max-width:760px){.category-art-img{height:125px}}
+
+
+/* =========================================================
+   FINAL INNER-PAGE TYPOGRAPHY SAFETY
+   ========================================================= */
+:where(
+  .inner-hero h1,
+  .archive-intro h1,
+  .event-detail__copy h1,
+  .category-hero h1,
+  .community-hero h1,
+  .search-hero h1,
+  .error-content h1,
+  .game-detail-copy h1,
+  .article-header h1
+){
+  line-height:1.04!important;
+  text-wrap:balance;
+  overflow-wrap:break-word;
+  word-break:normal;
+}
+
+:where(
+  .inner-hero__grid,
+  .archive-intro,
+  .event-detail__grid,
+  .community-hero,
+  .article-layout,
+  .contact-intro
+) > *{
+  min-width:0;
+}
+
+.inner-hero__lead,
+.archive-intro p,
+.event-detail__copy p,
+.community-hero p,
+.search-hero p,
+.game-detail-copy p{
+  line-height:1.9;
+}
+
+@media(max-width:760px){
+  .inner-hero{
+    padding:48px 0 40px;
+  }
+
+  .inner-hero h1,
+  .archive-intro h1,
+  .event-detail__copy h1,
+  .category-hero h1,
+  .community-hero h1,
+  .search-hero h1,
+  .error-content h1,
+  .game-detail-copy h1,
+  .article-header h1{
+    font-size:clamp(40px,11.5vw,58px)!important;
+    line-height:1.12!important;
+    letter-spacing:-.018em!important;
+    margin-bottom:18px;
+  }
+
+  .inner-hero__lead,
+  .archive-intro p,
+  .event-detail__copy p,
+  .community-hero p,
+  .search-hero p,
+  .game-detail-copy p{
+    font-size:clamp(14px,4.1vw,17px);
+    line-height:1.95!important;
+  }
+
+  .breadcrumbs{
+    margin-bottom:18px;
+    line-height:1.6;
+  }
+
+  .hero__actions,
+  .contact-actions{
+    gap:10px;
+  }
+
+  .hero__actions .btn,
+  .contact-actions .btn{
+    min-height:52px;
+    padding-block:10px;
+    line-height:1.45;
+  }
+
+  /* Decorative English display words stay behind the content and never collide. */
+  .hero-poster::before,
+  .archive-side-note::before{
+    opacity:.055!important;
+    pointer-events:none;
+  }
+}
+
+@media(max-width:420px){
+  .inner-hero h1,
+  .archive-intro h1,
+  .event-detail__copy h1,
+  .category-hero h1,
+  .community-hero h1,
+  .search-hero h1,
+  .error-content h1,
+  .game-detail-copy h1,
+  .article-header h1{
+    font-size:clamp(36px,11vw,48px)!important;
+    line-height:1.15!important;
+  }
+}
