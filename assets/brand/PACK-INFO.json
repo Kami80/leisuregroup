@@ -1,0 +1,63 @@
+{
+  "style": "Official Leisure three-color mark traced from the supplied main logo",
+  "colors": {
+    "teal": "#5AC4BE",
+    "coral": "#DC5856",
+    "yellow": "#FFC20E",
+    "ink": "#10263B",
+    "cream": "#FFF9ED",
+    "paper": "#F5EFE1"
+  },
+  "files": {
+    "hero-tabletop.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 4679
+    },
+    "logo-mono-dark.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 2745
+    },
+    "logo-mono-light.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 2746
+    },
+    "logo-primary-horizontal-outlined.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 20975
+    },
+    "logo-primary-horizontal.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 3215
+    },
+    "logo-stacked-outlined.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 20532
+    },
+    "logo-stacked.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 3182
+    },
+    "logo-symbol.svg": {
+      "xml_valid": true,
+      "render_valid": true,
+      "bytes": 2752
+    },
+    "logo-symbol.webp": {
+      "format": "WebP",
+      "size": [
+        800,
+        840
+      ],
+      "alpha": true,
+      "bytes": 14846
+    },
+    "hero_star_replaced_with_new_mark": true
+  }
+}
