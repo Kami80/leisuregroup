@@ -111,13 +111,16 @@
     return `<svg ${common}><circle cx="12" cy="12" r="6"/></svg>`;
   };
   const cartKey = (id, line='') => `${id}::${line || ''}`;
-  const hasCoffeeLine = item => Boolean(
-    item &&
-    item.coffeeBase === true &&
-    Array.isArray(item.lines) &&
-    item.lines.length > 0 &&
-    (item.tags || []).some(tag => normalize(tag) === 'قهوه')
-  );
+  // Coffee-line UI must only appear for drinks that explicitly contain coffee
+  // and have real selectable coffee-line pricing. This intentionally excludes
+  // items tagged "بدون قهوه" even though that text contains the word قهوه.
+  const hasCoffeeLine = item => {
+    if (!item || item.coffeeBase !== true) return false;
+    const tags = (item.tags || []).map(normalize);
+    const lines = Array.isArray(item.lines) ? item.lines.filter(Boolean) : [];
+    const linePrices = item.linePrices && typeof item.linePrices === 'object' ? item.linePrices : {};
+    return tags.includes('قهوه') && lines.length > 0 && lines.every(line => Number(linePrices[line]) > 0);
+  };
 
   const itemCartQty = id => [...cart.values()]
     .filter(entry => entry.id === id)

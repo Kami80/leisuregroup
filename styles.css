@@ -7221,3 +7221,48 @@ body.cafe-page:not(.cafe-sheet-open){
 .cafe-menu-card__count[hidden]{
   display:none!important;
 }
+
+/* =========================================================
+   CAFE MENU UX V4.1 — CATEGORY TAB TEXT/ICON OVERLAP FIX
+   Explicit physical grid areas keep RTL labels clear of icons.
+   ========================================================= */
+.cafe-category-tabs .cafe-tab{
+  grid-template-columns:auto max-content 30px!important;
+  grid-template-areas:"count copy icon"!important;
+  column-gap:7px!important;
+  direction:ltr!important;
+  width:max-content!important;
+  min-width:max-content!important;
+}
+.cafe-category-tabs .cafe-tab__count{
+  grid-area:count!important;
+  direction:rtl;
+}
+.cafe-category-tabs .cafe-tab__copy{
+  grid-area:copy!important;
+  min-width:0!important;
+  direction:rtl!important;
+  text-align:right!important;
+  justify-self:stretch;
+}
+.cafe-category-tabs .cafe-tab__icon{
+  grid-area:icon!important;
+  justify-self:end;
+}
+.cafe-category-tabs .cafe-tab__copy b,
+.cafe-category-tabs .cafe-tab__copy small{
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+}
+
+@media(max-width:760px){
+  .cafe-category-tabs .cafe-tab{
+    grid-template-columns:auto max-content 27px!important;
+    column-gap:6px!important;
+    padding-inline:8px!important;
+  }
+  .cafe-category-tabs .cafe-tab[data-cafe-category="coffee"]{
+    min-width:max-content!important;
+  }
+}
