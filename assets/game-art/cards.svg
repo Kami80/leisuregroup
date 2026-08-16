@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000"><rect width="800" height="1000" fill="#F5EFE1"/><rect x="24" y="24" width="752" height="952" rx="26" fill="#BBD7C8" stroke="#10263B" stroke-width="11"/>
+<text x="65" y="105" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="800" letter-spacing="4" fill="#10263B">LEISURE GAME LIBRARY</text>
+<text x="65" y="155" font-family="Bebas Neue,Impact,sans-serif" font-size="62" fill="#10263B">CARDS / ENGINE</text>
+<g transform="translate(200,260) rotate(-12)"><rect width="250" height="360" rx="18" fill="#F5B82E" stroke="#10263B" stroke-width="12"/></g><g transform="translate(390,300) rotate(12)"><rect width="250" height="360" rx="18" fill="#E6574F" stroke="#10263B" stroke-width="12"/></g>
+<rect x="65" y="850" width="670" height="70" fill="#FFF9ED" stroke="#10263B" stroke-width="8"/>
+<text x="95" y="897" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="2" fill="#10263B">COVER PLACEHOLDER SYSTEM</text></svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350" viewBox="0 0 1080 1350"><rect width="1080" height="1350" fill="#F5EFE1"/><rect x="26" y="26" width="1028" height="1298" fill="#F5EFE1" stroke="#10263B" stroke-width="14"/>
+<text x="70" y="115" font-family="Inter,Arial,sans-serif" font-size="26" font-weight="800" letter-spacing="5" fill="#10263B">LEISURE EVENT SYSTEM</text>
+<text x="70" y="330" font-family="Bebas Neue,Impact,sans-serif" font-size="190" fill="#10263B">CULTURE</text>
+<text x="72" y="430" font-family="Bebas Neue,Impact,sans-serif" font-size="82" fill="#D96C37">ART / BOOK / FILM</text>
+<circle cx="760" cy="780" r="225" fill="#D96C37" stroke="#10263B" stroke-width="14"/>
+<rect x="110" y="590" width="400" height="470" fill="#FFF9ED" stroke="#10263B" stroke-width="14" transform="rotate(-10 310 825)"/>
+<path d="M85 1165h910" stroke="#10263B" stroke-width="10" stroke-dasharray="25 18"/>
+<text x="75" y="1245" font-family="Inter,Arial,sans-serif" font-size="28" font-weight="700" fill="#10263B">DATE / TIME / VENUE / SEATS / PRICE → LIVE DATA</text></svg>

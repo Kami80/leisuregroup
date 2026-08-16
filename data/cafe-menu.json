@@ -1,0 +1,431 @@
+{
+  "meta": {
+    "name": "کافه آپادانا",
+    "subtitle": "بار گرم و سرد / میان‌وعده",
+    "hours": "۱۶:۰۰ تا ۲۳:۳۰",
+    "phone": "09124723863",
+    "whatsapp": "989124723863",
+    "address": "بلوار سجاد، چهارراه آپادانا، ابتدای آپادانا اول، کوچه شهریار، پلاک ۱۶",
+    "lat": 32.6323879201418,
+    "lng": 51.69308592177129,
+    "price_note": "قیمت هر آیتم روی منو درج شده است. موجودی بعضی آیتم‌ها ممکن است در طول روز تغییر کند.",
+    "hero_images": [
+      {
+        "title": "فضای کافه",
+        "image": "assets/cafe/hero-boardgame-cafe.webp",
+        "target": "all"
+      },
+      {
+        "title": "لاین قهوه",
+        "image": "assets/cafe/coffee-lineup.webp",
+        "target": "hot"
+      },
+      {
+        "title": "بار سرد",
+        "image": "assets/cafe/cold-drinks.webp",
+        "target": "cold"
+      },
+      {
+        "title": "اسنک‌های میز بازی",
+        "image": "assets/cafe/snacks-spread.webp",
+        "target": "snack"
+      },
+      {
+        "title": "دسر و کیک",
+        "image": "assets/cafe/desserts-board.webp",
+        "target": "dessert"
+      },
+      {
+        "title": "حال‌وهوای کافه",
+        "image": "assets/cafe/cafe-ambience-people.webp",
+        "target": "all"
+      }
+    ],
+    "coffee_price_note": "لاین ۱۰۰٪ عربیکا برای نوشیدنی‌های پایه قهوه حدود ۱۵٪ گران‌تر از لاین ۷۰/۳۰ محاسبه می‌شود."
+  },
+  "categories": [
+    {
+      "id": "all",
+      "title": "همه",
+      "short": "همه",
+      "icon": "✦"
+    },
+    {
+      "id": "hot",
+      "title": "نوشیدنی گرم",
+      "short": "گرم",
+      "icon": "☕"
+    },
+    {
+      "id": "cold",
+      "title": "نوشیدنی سرد",
+      "short": "سرد",
+      "icon": "🥤"
+    },
+    {
+      "id": "snack",
+      "title": "میان‌وعده",
+      "short": "اسنک",
+      "icon": "🍟"
+    },
+    {
+      "id": "dessert",
+      "title": "کیک و دسر",
+      "short": "دسر",
+      "icon": "🍰"
+    }
+  ],
+  "items": [
+    {
+      "id": "espresso",
+      "category": "hot",
+      "name": "اسپرسو",
+      "desc": "شات قهوه کوتاه و غلیظ برای شروع سریع یک دور جدید بازی.",
+      "tags": [
+        "قهوه",
+        "گرم"
+      ],
+      "price": 170000,
+      "image": "assets/cafe/items/espresso.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/espresso-thumb.webp",
+      "linePrices": {
+        "70/30": 170000,
+        "100٪ عربیکا": 195000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "americano",
+      "category": "hot",
+      "name": "آمریکانو",
+      "desc": "اسپرسو و آب داغ؛ سبک‌تر، تمیز و مناسب برای زمان‌های طولانی‌تر.",
+      "tags": [
+        "قهوه",
+        "گرم"
+      ],
+      "price": 190000,
+      "image": "assets/cafe/items/americano.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/americano-thumb.webp",
+      "linePrices": {
+        "70/30": 190000,
+        "100٪ عربیکا": 220000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "latte",
+      "category": "hot",
+      "name": "لاته",
+      "desc": "قهوه و شیر با بافت نرم؛ انتخاب متعادل برای بیشتر سلیقه‌ها.",
+      "tags": [
+        "شیر",
+        "قهوه"
+      ],
+      "price": 230000,
+      "image": "assets/cafe/items/latte.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/latte-thumb.webp",
+      "linePrices": {
+        "70/30": 230000,
+        "100٪ عربیکا": 265000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "cappuccino",
+      "category": "hot",
+      "name": "کاپوچینو",
+      "desc": "اسپرسو، شیر و فوم؛ کلاسیک و جمع‌وجور.",
+      "tags": [
+        "شیر",
+        "قهوه"
+      ],
+      "price": 240000,
+      "image": "assets/cafe/items/cappuccino.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/cappuccino-thumb.webp",
+      "linePrices": {
+        "70/30": 240000,
+        "100٪ عربیکا": 275000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "mocha",
+      "category": "hot",
+      "name": "موکا",
+      "desc": "ترکیب شکلات و قهوه؛ شیرین‌تر و مناسب برای عصرهای طولانی.",
+      "tags": [
+        "شکلات",
+        "قهوه"
+      ],
+      "price": 270000,
+      "image": "assets/cafe/items/mocha.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/mocha-thumb.webp",
+      "linePrices": {
+        "70/30": 270000,
+        "100٪ عربیکا": 310000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "hot-chocolate",
+      "category": "hot",
+      "name": "هات چاکلت",
+      "desc": "نوشیدنی گرم شکلاتی برای کسانی که قهوه نمی‌خواهند.",
+      "tags": [
+        "شکلات",
+        "گرم"
+      ],
+      "price": 260000,
+      "image": "assets/cafe/items/hot-chocolate.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/hot-chocolate-thumb.webp"
+    },
+    {
+      "id": "tea",
+      "category": "hot",
+      "name": "چای",
+      "desc": "ساده، آشنا و مناسب برای یک دور طولانی بازی.",
+      "tags": [
+        "بدون قهوه"
+      ],
+      "price": 90000,
+      "image": "assets/cafe/items/tea.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/tea-thumb.webp"
+    },
+    {
+      "id": "herbal-tea",
+      "category": "hot",
+      "name": "دمنوش روز",
+      "desc": "ترکیب روز کافه؛ طعم روز را موقع سفارش بپرس.",
+      "tags": [
+        "بدون قهوه"
+      ],
+      "price": 130000,
+      "image": "assets/cafe/items/herbal-tea.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/herbal-tea-thumb.webp"
+    },
+    {
+      "id": "iced-americano",
+      "category": "cold",
+      "name": "آیس آمریکانو",
+      "desc": "قهوه خنک و سبک با یخ؛ انتخابی شفاف و تند.",
+      "tags": [
+        "قهوه",
+        "سرد"
+      ],
+      "price": 210000,
+      "image": "assets/cafe/items/iced-americano.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/iced-americano-thumb.webp",
+      "linePrices": {
+        "70/30": 210000,
+        "100٪ عربیکا": 240000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "iced-latte",
+      "category": "cold",
+      "name": "آیس لاته",
+      "desc": "قهوه و شیر روی یخ؛ خنک، نرم و محبوب.",
+      "tags": [
+        "شیر",
+        "قهوه"
+      ],
+      "price": 250000,
+      "image": "assets/cafe/items/iced-latte.webp",
+      "coffeeBase": true,
+      "lines": [
+        "70/30",
+        "100٪ عربیکا"
+      ],
+      "imageThumb": "assets/cafe/items/iced-latte-thumb.webp",
+      "linePrices": {
+        "70/30": 250000,
+        "100٪ عربیکا": 290000
+      },
+      "arabicaPremiumPercent": 15
+    },
+    {
+      "id": "lemonade",
+      "category": "cold",
+      "name": "لیموناد",
+      "desc": "ترش و خنک برای بین دو بازی پرهیجان.",
+      "tags": [
+        "بدون قهوه",
+        "سرد"
+      ],
+      "price": 190000,
+      "image": "assets/cafe/items/lemonade.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/lemonade-thumb.webp"
+    },
+    {
+      "id": "mojito",
+      "category": "cold",
+      "name": "موهیتو",
+      "desc": "نعنا، لیمو و یخ؛ سبک و تازه.",
+      "tags": [
+        "بدون قهوه",
+        "سرد"
+      ],
+      "price": 220000,
+      "image": "assets/cafe/items/mojito.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/mojito-thumb.webp"
+    },
+    {
+      "id": "chocolate-shake",
+      "category": "cold",
+      "name": "شیک شکلات",
+      "desc": "خنک، غلیظ و شیرین؛ برای یک استراحت کامل.",
+      "tags": [
+        "شکلات",
+        "سرد"
+      ],
+      "price": 320000,
+      "image": "assets/cafe/items/chocolate-shake.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/chocolate-shake-thumb.webp"
+    },
+    {
+      "id": "strawberry-shake",
+      "category": "cold",
+      "name": "شیک توت‌فرنگی",
+      "desc": "انتخاب شیرین و خنک با بافت کرمی.",
+      "tags": [
+        "شیرین",
+        "سرد"
+      ],
+      "price": 310000,
+      "image": "assets/cafe/items/strawberry-shake.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/strawberry-shake-thumb.webp"
+    },
+    {
+      "id": "hot-chips",
+      "category": "snack",
+      "name": "هات چیپس",
+      "desc": "میان‌وعده گرم و اشتراکی؛ مناسب قبل از شروع دور جدید.",
+      "tags": [
+        "اشتراکی",
+        "گرم"
+      ],
+      "price": 330000,
+      "image": "assets/cafe/items/hot-chips.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/hot-chips-thumb.webp"
+    },
+    {
+      "id": "fries",
+      "category": "snack",
+      "name": "سیب‌زمینی",
+      "desc": "ساده، ترد و مناسب اشتراک بین بازیکن‌ها.",
+      "tags": [
+        "اشتراکی"
+      ],
+      "price": 250000,
+      "image": "assets/cafe/items/fries.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/fries-thumb.webp"
+    },
+    {
+      "id": "nachos",
+      "category": "snack",
+      "name": "ناچو و دیپ",
+      "desc": "لقمه‌ای، مناسب میز بازی و کم‌دردسر بین نوبت‌ها.",
+      "tags": [
+        "اشتراکی"
+      ],
+      "price": 390000,
+      "image": "assets/cafe/items/nachos.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/nachos-thumb.webp"
+    },
+    {
+      "id": "toast",
+      "category": "snack",
+      "name": "تست روز",
+      "desc": "میان‌وعده روز کافه؛ ترکیب را هنگام سفارش بپرس.",
+      "tags": [
+        "روزانه"
+      ],
+      "price": 350000,
+      "image": "assets/cafe/items/toast.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/toast-thumb.webp"
+    },
+    {
+      "id": "chocolate-cake",
+      "category": "dessert",
+      "name": "کیک شکلاتی",
+      "desc": "برش کیک مرطوب شکلاتی برای کنار قهوه یا پایان بازی.",
+      "tags": [
+        "کیک",
+        "شکلات"
+      ],
+      "price": 250000,
+      "image": "assets/cafe/items/chocolate-cake.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/chocolate-cake-thumb.webp"
+    },
+    {
+      "id": "cheesecake",
+      "category": "dessert",
+      "name": "چیزکیک روز",
+      "desc": "چیزکیک سبک و تازه؛ طعم روز را بررسی کن.",
+      "tags": [
+        "کیک",
+        "روزانه"
+      ],
+      "price": 270000,
+      "image": "assets/cafe/items/cheesecake.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/cheesecake-thumb.webp"
+    },
+    {
+      "id": "cookie",
+      "category": "dessert",
+      "name": "کوکی",
+      "desc": "یک انتخاب کوچک برای کنار نوشیدنی.",
+      "tags": [
+        "شیرین"
+      ],
+      "price": 120000,
+      "image": "assets/cafe/items/cookie.webp",
+      "coffeeBase": false,
+      "imageThumb": "assets/cafe/items/cookie-thumb.webp"
+    }
+  ]
+}

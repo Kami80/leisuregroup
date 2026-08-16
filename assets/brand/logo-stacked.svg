@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="260" viewBox="0 0 400 260" role="img">
+<rect width="400" height="260" fill="#F5EFE1"/>
+<g transform="translate(125,10) scale(.75)">
+<g stroke="#FFF9ED" stroke-width="3.5" stroke-linejoin="round">
+<path fill="#F5B82E" d="M100 107 L78 90 L51 87 L65 72 L36 66 L62 55 L39 42 L69 40 L56 19 L81 31 L83 5 L99 27 L113 4 L119 31 L142 14 L137 42 L168 33 L150 57 L179 59 L155 76 L178 87 L147 91 L124 106 Z"/>
+<path fill="#49B8B3" d="M100 108 L80 91 L51 87 L62 105 L31 102 L52 119 L22 124 L48 137 L17 149 L51 153 L27 172 L62 168 L45 192 L76 176 L69 205 L93 178 L100 151 Z"/>
+<path fill="#E6574F" d="M100 108 L122 91 L149 86 L138 104 L169 101 L148 118 L180 123 L151 136 L183 149 L151 153 L174 173 L141 167 L157 193 L126 176 L131 205 L107 178 L100 151 Z"/>
+</g>
+</g>
+<text x="200" y="205" text-anchor="middle" font-family="Noto Sans Arabic" font-size="28" font-weight="800" fill="#10263B">انجمن اوقات فراغت اصفهان</text>
+<text x="200" y="235" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="700" letter-spacing="3" fill="#10263B">LEISURE SOCIETY</text>
+
+</svg>

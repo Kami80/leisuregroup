@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000"><rect width="800" height="1000" fill="#F5EFE1"/><rect x="24" y="24" width="752" height="952" rx="26" fill="#49B8B3" stroke="#10263B" stroke-width="11"/>
+<text x="65" y="105" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="800" letter-spacing="4" fill="#10263B">LEISURE GAME LIBRARY</text>
+<text x="65" y="155" font-family="Bebas Neue,Impact,sans-serif" font-size="62" fill="#10263B">CO-OP</text>
+<circle cx="400" cy="510" r="220" fill="#FFF9ED" stroke="#10263B" stroke-width="12"/><path d="M250 510h300M400 360v300M290 400l220 220M510 400L290 620" stroke="#E6574F" stroke-width="18" stroke-linecap="round"/>
+<rect x="65" y="850" width="670" height="70" fill="#FFF9ED" stroke="#10263B" stroke-width="8"/>
+<text x="95" y="897" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="2" fill="#10263B">COVER PLACEHOLDER SYSTEM</text></svg>

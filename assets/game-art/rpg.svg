@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="1000" viewBox="0 0 800 1000"><rect width="800" height="1000" fill="#F5EFE1"/><rect x="24" y="24" width="752" height="952" rx="26" fill="#F5B82E" stroke="#10263B" stroke-width="11"/>
+<text x="65" y="105" font-family="Inter,Arial,sans-serif" font-size="24" font-weight="800" letter-spacing="4" fill="#10263B">LEISURE GAME LIBRARY</text>
+<text x="65" y="155" font-family="Bebas Neue,Impact,sans-serif" font-size="62" fill="#10263B">CAMPAIGN / RPG</text>
+<path d="M400 220l180 85 55 190-115 170H280L165 495l55-190z" fill="#10263B" stroke="#E6574F" stroke-width="14"/><text x="400" y="540" text-anchor="middle" font-family="Bebas Neue,Impact,sans-serif" font-size="190" fill="#F5B82E">20</text>
+<rect x="65" y="850" width="670" height="70" fill="#FFF9ED" stroke="#10263B" stroke-width="8"/>
+<text x="95" y="897" font-family="Inter,Arial,sans-serif" font-size="21" font-weight="700" letter-spacing="2" fill="#10263B">COVER PLACEHOLDER SYSTEM</text></svg>

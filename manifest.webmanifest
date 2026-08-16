@@ -1,0 +1,20 @@
+{
+  "name": "انجمن اوقات فراغت اصفهان",
+  "short_name": "Leisure",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F5EFE1",
+  "theme_color": "#10263B",
+  "description": "بازی، رویداد، کافه، کامیونیتی و شهرگردی.",
+  "icons": [
+    {
+      "src": "/assets/brand/logo-symbol.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
