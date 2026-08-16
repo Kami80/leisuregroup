@@ -6560,3 +6560,123 @@ body.cafe-page:not(.cafe-sheet-open){
     transition:none!important;
   }
 }
+
+
+/* =========================================================
+   CAFE CATEGORY NAV — TRUE FLOATING STICKY RAIL
+   ========================================================= */
+@media(max-width:760px){
+  /* Sticky needs every ancestor to remain unclipped. */
+  .cafe-menu-shell,
+  .cafe-menu-shell > .shell{
+    overflow:visible!important;
+  }
+
+  #cafeCategoryFloatShell,
+  .cafe-category-float-shell{
+    position:sticky!important;
+    top:calc(58px + env(safe-area-inset-top))!important;
+    z-index:1450!important;
+
+    /* The wrapper itself stays invisible, as requested. */
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+    -webkit-mask-image:none!important;
+    mask-image:none!important;
+
+    margin:6px -5px 10px!important;
+    padding:5px 5px 7px!important;
+
+    pointer-events:none;
+    will-change:top;
+    transition:top .28s var(--ease-out),padding .2s ease!important;
+  }
+
+  /* When the mobile app bar hides, the category rail moves to the top. */
+  #cafeCategoryFloatShell.is-appbar-hidden,
+  .cafe-category-float-shell.is-appbar-hidden{
+    top:calc(6px + env(safe-area-inset-top))!important;
+  }
+
+  /* The actual navigation is the only visible floating object. */
+  #cafeCategoryTabs,
+  .cafe-category-float-shell .cafe-category-tabs{
+    pointer-events:auto;
+    position:relative!important;
+    top:auto!important;
+    z-index:1!important;
+
+    width:100%!important;
+    margin:0!important;
+
+    background:rgba(255,249,237,.94)!important;
+    border:2px solid var(--ink)!important;
+    border-radius:15px!important;
+
+    box-shadow:
+      4px 4px 0 var(--ink),
+      0 8px 18px rgba(16,38,59,.06)!important;
+
+    -webkit-backdrop-filter:blur(14px) saturate(1.08);
+    backdrop-filter:blur(14px) saturate(1.08);
+
+    transition:
+      box-shadow .22s ease,
+      transform .22s var(--ease-out),
+      background .22s ease!important;
+  }
+
+  /* Once it is actually following the viewport, give it stronger lift. */
+  .cafe-category-float-shell.is-floating #cafeCategoryTabs,
+  .cafe-category-float-shell.is-floating .cafe-category-tabs{
+    background:rgba(255,249,237,.97)!important;
+    transform:translateY(0);
+    box-shadow:
+      5px 6px 0 var(--ink),
+      0 16px 30px rgba(16,38,59,.15)!important;
+  }
+
+  /* Compress very slightly after extended scrolling without shrinking tap targets. */
+  .cafe-category-float-shell.is-compact{
+    padding-top:3px!important;
+    padding-bottom:5px!important;
+  }
+  .cafe-category-float-shell.is-compact #cafeCategoryTabs,
+  .cafe-category-float-shell.is-compact .cafe-category-tabs{
+    box-shadow:
+      4px 5px 0 var(--ink),
+      0 12px 24px rgba(16,38,59,.13)!important;
+  }
+
+  /* Horizontal finger swipe remains native; vertical page scroll remains free. */
+  #cafeCategoryTabs{
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-x pan-y!important;
+    overscroll-behavior-x:contain;
+    overscroll-behavior-y:auto!important;
+    scrollbar-width:none;
+  }
+  #cafeCategoryTabs::-webkit-scrollbar{
+    display:none;
+  }
+
+  /* Prevent the sticky rail from being obscured by menu cards. */
+  .cafe-menu-layout,
+  #cafeMenuGrid,
+  .cafe-menu-card{
+    position:relative;
+    z-index:auto;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  #cafeCategoryFloatShell,
+  #cafeCategoryTabs{
+    transition:none!important;
+  }
+}
