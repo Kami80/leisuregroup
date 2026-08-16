@@ -44,11 +44,17 @@
   const categoryFloatShell = document.getElementById('cafeCategoryFloatShell');
   const categoryFloatAnchor = document.getElementById('cafeCategoryFloatAnchor');
   const mobileStatus = document.getElementById('cafeMobileStatus');
+  const menuContext = document.getElementById('cafeMenuContext');
+  const menuContextText = document.getElementById('cafeMenuContextText');
+  const menuReset = document.getElementById('cafeMenuReset');
+  const emptyReset = document.getElementById('cafeEmptyReset');
+  const quickPillButtons = [...document.querySelectorAll('[data-quick-query]')];
 
   let category = 'all';
   let currentItem = null;
   let currentQty = 1;
   let currentLine = '';
+  let activeQuickQuery = '';
   const cart = new Map();
   const cartStorageKey = 'leisure-cafe-cart-v2';
 
@@ -86,7 +92,24 @@
     return Number(item.price || 0);
   };
   const normalize = s => (s || '').toString().toLowerCase().replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/\s+/g,' ').trim();
-  const categoryInfo = id => data.categories.find(c => c.id === id) || {title:'کافه', icon:'✦'};
+  const coffeeCategory = {id:'coffee', title:'لاین قهوه', short:'لاین قهوه', icon:'☕'};
+  const categoryInfo = id => id === 'coffee'
+    ? coffeeCategory
+    : (data.categories.find(c => c.id === id) || {title:'کافه', icon:'✦'});
+  const tabCategories = () => {
+    const all = data.categories.find(c => c.id === 'all') || {id:'all',title:'همه',short:'همه',icon:'✦'};
+    return [all, coffeeCategory, ...data.categories.filter(c => c.id !== 'all')];
+  };
+  const tabIcon = id => {
+    const common = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"';
+    if (id === 'all') return `<svg ${common}><path d="M12 3.5l1.6 4.9 4.9 1.6-4.9 1.6-1.6 4.9-1.6-4.9L5.5 10l4.9-1.6L12 3.5Z"/><path d="M18.2 15.8l.7 2.1 2.1.7-2.1.7-.7 2.1-.7-2.1-2.1-.7 2.1-.7.7-2.1Z"/></svg>`;
+    if (id === 'coffee') return `<svg ${common}><path d="M7.3 5.1c2.7-2.1 7.1-1.4 9.5 1.6 2.4 3 2 7.3-.7 9.5-2.7 2.2-7.1 1.5-9.5-1.5-2.4-3-2-7.4.7-9.6Z"/><path d="M8 15.6c1.5-1.1 2.1-2.5 2-4.1-.1-1.8.7-3.6 2.4-5.2"/></svg>`;
+    if (id === 'hot') return `<svg ${common}><path d="M6 9h10v5.2A3.8 3.8 0 0 1 12.2 18H9.8A3.8 3.8 0 0 1 6 14.2V9Z"/><path d="M16 10.5h1.7a2.3 2.3 0 0 1 0 4.6H16"/><path d="M8.5 6.7c-1.1-1 .8-1.8-.2-2.8M12 6.7c-1.1-1 .8-1.8-.2-2.8"/></svg>`;
+    if (id === 'cold') return `<svg ${common}><path d="M7 8h10l-1 11H8L7 8Z"/><path d="M6.5 8h11M9 5.5h5.5M13.5 5.5l1.6-2.5"/><path d="M9.5 12.3h5"/></svg>`;
+    if (id === 'snack') return `<svg ${common}><path d="M7.5 9.5h9l-1 9h-7l-1-9Z"/><path d="M8.5 9.5 8 4.8M11 9.5l.2-5.3M13.5 9.5l.8-5M16 9.5l1.2-4.2"/></svg>`;
+    if (id === 'dessert') return `<svg ${common}><path d="M5 17h14L16.5 8H8L5 17Z"/><path d="M8 8c2.1-2 5.8-2 8.5 0M12 8V5.3M12 3.2v.1"/></svg>`;
+    return `<svg ${common}><circle cx="12" cy="12" r="6"/></svg>`;
+  };
   const cartKey = (id, line='') => `${id}::${line || ''}`;
   const hasCoffeeLine = item => Boolean(
     item &&
@@ -96,37 +119,113 @@
     (item.tags || []).some(tag => normalize(tag) === 'قهوه')
   );
 
+  const itemCartQty = id => [...cart.values()]
+    .filter(entry => entry.id === id)
+    .reduce((sum, entry) => sum + Number(entry.qty || 0), 0);
+
+  function syncCardQuantity(id) {
+    if (!grid) return;
+    const control = grid.querySelector(`[data-card-cart="${id}"]`);
+    if (!control) return;
+    const qty = itemCartQty(id);
+    const countNode = control.querySelector('[data-card-count]');
+    const minusButton = control.querySelector('[data-card-minus]');
+    control.classList.toggle('has-items', qty > 0);
+    if (countNode) {
+      countNode.hidden = qty === 0;
+      countNode.textContent = faNum(qty);
+      countNode.setAttribute('aria-label', `${faNum(qty)} عدد در سفارش`);
+    }
+    if (minusButton) minusButton.hidden = qty === 0;
+  }
+
+  const syncAllCardQuantities = () => {
+    grid?.querySelectorAll('[data-card-cart]').forEach(control => {
+      syncCardQuantity(control.dataset.cardCart);
+    });
+  };
+
   const centerActiveCategoryTab = () => {
     if (!tabsWrap) return;
     const activeBtn = tabsWrap.querySelector('[aria-pressed="true"]');
     if (!activeBtn) return;
 
-    /* Horizontal-only. scrollIntoView() can also alter vertical page
-       position on mobile and fight the user's finger scrolling. */
-    const target =
-      activeBtn.offsetLeft -
-      (tabsWrap.clientWidth - activeBtn.offsetWidth) / 2;
+    /* Use physical viewport coordinates instead of offsetLeft/scrollLeft
+       math. This behaves consistently in RTL browsers without changing
+       the page's vertical scroll position. */
+    const railRect = tabsWrap.getBoundingClientRect();
+    const buttonRect = activeBtn.getBoundingClientRect();
+    const delta = (buttonRect.left + buttonRect.width / 2) - (railRect.left + railRect.width / 2);
 
-    tabsWrap.scrollTo({
-      left: target,
+    if (Math.abs(delta) < 2) return;
+    tabsWrap.scrollBy({
+      left: delta,
       behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
     });
   };
 
+  const currentQuery = () => normalize(search?.value);
+
+  function updateQuickPills() {
+    quickPillButtons.forEach(btn => {
+      const isActive = Boolean(activeQuickQuery) && normalize(btn.dataset.quickQuery) === normalize(activeQuickQuery);
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  function updateMenuContext(listLength = filtered().length) {
+    if (!menuContext || !menuContextText) return;
+    const q = currentQuery();
+    const cat = categoryInfo(category);
+    const parts = [];
+
+    if (category !== 'all') parts.push(cat.title);
+    if (q) parts.push(`جستجو: «${search.value.trim()}»`);
+
+    menuContextText.textContent = parts.length
+      ? `${parts.join(' · ')} — ${faNum(listLength)} نتیجه`
+      : `همه آیتم‌ها — ${faNum(listLength)} مورد`;
+
+    const hasFilters = category !== 'all' || Boolean(q);
+    menuContext.classList.toggle('has-filter', hasFilters);
+    if (menuReset) menuReset.hidden = !hasFilters;
+  }
+
+  function resetFilters({focusSearch = false, scrollToMenu = false} = {}) {
+    category = 'all';
+    activeQuickQuery = '';
+    if (search) search.value = '';
+    renderTabs();
+    render();
+    requestAnimationFrame(centerActiveCategoryTab);
+
+    if (scrollToMenu) {
+      document.getElementById('cafeMenu')?.scrollIntoView({
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start'
+      });
+    }
+    if (focusSearch) search?.focus({preventScroll:true});
+  }
+
   function renderTabs() {
     const countFor = id => id === 'all'
       ? data.items.length
-      : data.items.filter(item => item.category === id).length;
+      : id === 'coffee'
+        ? data.items.filter(hasCoffeeLine).length
+        : data.items.filter(item => item.category === id).length;
 
     const helperText = {
       all: 'کل منو',
+      coffee: '۷۰/۳۰ · عربیکا',
       hot: 'گرم',
       cold: 'خنک',
       snack: 'خوراکی',
       dessert: 'شیرین'
     };
 
-    tabsWrap.innerHTML = data.categories.map(c => {
+    tabsWrap.innerHTML = tabCategories().map(c => {
       const active = c.id === category;
       return `
         <button
@@ -136,7 +235,7 @@
           aria-pressed="${active}"
           aria-controls="cafeMenuGrid"
           aria-label="${c.title}، ${countFor(c.id)} آیتم">
-          <span class="cafe-tab__icon" aria-hidden="true">${c.icon}</span>
+          <span class="cafe-tab__icon" aria-hidden="true">${tabIcon(c.id)}</span>
           <span class="cafe-tab__copy">
             <b>${c.short}</b>
             <small>${helperText[c.id] || c.title}</small>
@@ -150,9 +249,14 @@
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         category = btn.dataset.cafeCategory;
+        if (activeQuickQuery) {
+          activeQuickQuery = '';
+          if (search) search.value = '';
+        }
         renderTabs();
         render();
         requestAnimationFrame(centerActiveCategoryTab);
+        tinyHaptic();
       });
     });
   }
@@ -167,6 +271,8 @@
     gallery.querySelectorAll('[data-gallery-target]').forEach(btn => {
       btn.addEventListener('click', () => {
         category = btn.dataset.galleryTarget || 'all';
+        activeQuickQuery = '';
+        if (search) search.value = '';
         renderTabs();
         render();
         requestAnimationFrame(centerActiveCategoryTab);
@@ -178,7 +284,7 @@
   function filtered() {
     const q = normalize(search?.value);
     return data.items.filter(item => {
-      const catOk = category === 'all' || item.category === category;
+      const catOk = category === 'all' || (category === 'coffee' ? hasCoffeeLine(item) : item.category === category);
       const hay = normalize([item.name, item.desc, ...(item.tags || []), categoryInfo(item.category).title, ...(item.lines || [])].join(' '));
       return catOk && (!q || hay.includes(q));
     });
@@ -186,8 +292,11 @@
 
   function categoryDivider(categoryId, compact = false) {
     const cat = categoryInfo(categoryId);
-    const categoryItems = data.items.filter(item => item.category === categoryId);
+    const categoryItems = categoryId === 'coffee'
+      ? data.items.filter(hasCoffeeLine)
+      : data.items.filter(item => item.category === categoryId);
     const subtitles = {
+      coffee: 'همه نوشیدنی‌های پایه قهوه با انتخاب لاین ۷۰/۳۰ یا ۱۰۰٪ عربیکا',
       hot: 'قهوه، چای و نوشیدنی‌های گرم',
       cold: 'خنک، تازه و مناسب بین دو دور بازی',
       snack: 'برای اشتراک روی میز و بازی‌های طولانی',
@@ -213,28 +322,34 @@
 
   function card(item, idx) {
     const cat = categoryInfo(item.category);
+    const qtyInCart = itemCartQty(item.id);
+    const coffee = hasCoffeeLine(item);
     return `
-      <article class="cafe-menu-card" data-menu-open="${item.id}" data-category="${item.category}" tabindex="0" data-reveal style="--d:${idx}">
+      <article class="cafe-menu-card" data-menu-open="${item.id}" data-category="${item.category}" tabindex="0" role="button" aria-label="مشاهده ${item.name}" data-reveal style="--d:${idx}">
         <div class="cafe-menu-card__image">
           <img src="../${item.imageThumb || item.image}" alt="${item.name}" loading="lazy" decoding="async">
-          <span class="cafe-menu-card__price">${hasCoffeeLine(item) ? `از ${money(item.price)}` : money(item.price)}</span>
+          <span class="cafe-menu-card__price">${coffee ? `از ${money(item.price)}` : money(item.price)}</span>
           <span class="cafe-menu-card__category"><b>${cat.icon}</b>${cat.title}</span>
         </div>
         <div class="cafe-menu-card__body">
           <div class="cafe-menu-card__title">
             <h3>${item.name}</h3>
-            ${hasCoffeeLine(item) ? '<span class="cafe-menu-card__lineflag">لاین قهوه</span>' : ''}
+            ${coffee ? '<span class="cafe-menu-card__lineflag">لاین قهوه</span>' : ''}
           </div>
           <p>${item.desc}</p>
           <div class="cafe-menu-card__tags">
             ${(item.tags || []).map(t => `<span>${t}</span>`).join('')}
-            ${hasCoffeeLine(item) ? '<span>۷۰/۳۰</span><span>۱۰۰٪ عربیکا</span>' : ''}
+            ${coffee ? '<span>۷۰/۳۰</span><span>۱۰۰٪ عربیکا</span>' : ''}
           </div>
           <div class="cafe-menu-card__foot">
-            <span class="cafe-menu-card__hint">جزئیات و انتخاب${hasCoffeeLine(item) ? ' لاین قهوه' : ''}</span>
+            <span class="cafe-menu-card__hint">جزئیات و انتخاب${coffee ? ' لاین قهوه' : ''}</span>
             <div class="cafe-menu-card__actions">
               <span class="cafe-menu-card__cta">مشاهده ←</span>
-              <button class="cafe-menu-card__quickadd" type="button" data-quick-add="${item.id}" aria-label="افزودن سریع ${item.name}">＋</button>
+              <div class="cafe-menu-card__cart-control ${qtyInCart > 0 ? 'has-items' : ''} ${coffee ? 'is-coffee' : ''}" data-card-cart="${item.id}">
+                ${coffee ? '' : `<button class="cafe-menu-card__minus" type="button" data-card-minus="${item.id}" ${qtyInCart > 0 ? '' : 'hidden'} aria-label="کم کردن یک عدد ${item.name}">−</button>`}
+                <span class="cafe-menu-card__count" data-card-count="${item.id}" ${qtyInCart > 0 ? '' : 'hidden'} aria-label="${faNum(qtyInCart)} عدد در سفارش">${faNum(qtyInCart)}</span>
+                <button class="cafe-menu-card__quickadd ${coffee ? 'requires-choice' : ''}" type="button" data-quick-add="${item.id}" aria-label="${coffee ? `انتخاب لاین قهوه و افزودن ${item.name}` : `افزودن یک عدد ${item.name}`}"></button>
+              </div>
             </div>
           </div>
         </div>
@@ -243,19 +358,29 @@
   }
 
   function bindCards() {
+    grid.querySelectorAll('[data-card-cart]').forEach(control => {
+      control.addEventListener('click', e => e.stopPropagation());
+    });
+
     grid.querySelectorAll('[data-quick-add]').forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();
         e.stopPropagation();
         const item = byId[btn.dataset.quickAdd];
         if (!item) return;
-        const line = hasCoffeeLine(item) ? (item.lines?.[0] || '') : '';
+        if (hasCoffeeLine(item)) {
+          openItem(item.id);
+          tinyHaptic();
+          return;
+        }
+        const line = '';
         const key = cartKey(item.id, line);
         const existing = cart.get(key) || {id:item.id, qty:0, line};
         existing.qty += 1;
         cart.set(key, existing);
         saveCart();
         updateOrderUI();
+        syncCardQuantity(item.id);
         tinyHaptic();
         window.leisureToast?.(`${item.name} به سفارش اضافه شد`);
         btn.classList.add('is-added');
@@ -263,10 +388,30 @@
       });
     });
 
+    grid.querySelectorAll('[data-card-minus]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const item = byId[btn.dataset.cardMinus];
+        if (!item) return;
+        const key = cartKey(item.id, '');
+        const existing = cart.get(key);
+        if (!existing) return;
+        existing.qty -= 1;
+        if (existing.qty <= 0) cart.delete(key);
+        else cart.set(key, existing);
+        saveCart();
+        updateOrderUI();
+        syncCardQuantity(item.id);
+        tinyHaptic();
+      });
+    });
+
     grid.querySelectorAll('[data-menu-open]').forEach(node => {
       const open = () => openItem(node.dataset.menuOpen);
       node.addEventListener('click', open);
       node.addEventListener('keydown', e => {
+        if (e.target.closest('button, a, input, textarea, select')) return;
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           open();
@@ -298,6 +443,8 @@
     grid.innerHTML = html;
     count.textContent = `${faNum(list.length)} آیتم`;
     empty.classList.toggle('is-visible', !list.length);
+    updateQuickPills();
+    updateMenuContext(list.length);
     bindCards();
     window.LeisureMotion?.refresh?.();
   }
@@ -328,6 +475,7 @@
       hasCoffeeLine(currentItem) ? '<span>لاین قهوه قابل انتخاب</span>' : ''
     ].join('');
     itemQty.textContent = faNum(currentQty);
+    paintItemAddButton();
 
     if (hasCoffeeLine(currentItem)) {
       itemLines.hidden = false;
@@ -349,6 +497,13 @@
     }
   }
 
+  function paintItemAddButton() {
+    if (!itemAdd || !currentItem) return;
+    const total = itemUnitPrice(currentItem, currentLine) * currentQty;
+    itemAdd.innerHTML = `<span>افزودن به سفارش</span><b>${money(total)}</b>`;
+    itemAdd.setAttribute('aria-label', `افزودن ${faNum(currentQty)} عدد ${currentItem.name}، ${money(total)}`);
+  }
+
   function closeItem() {
     itemSheet.classList.remove('is-open');
     document.body.classList.remove('cafe-sheet-open');
@@ -364,6 +519,7 @@
     cart.set(key, existing);
     saveCart();
     updateOrderUI();
+    syncCardQuantity(currentItem.id);
     tinyHaptic();
     closeItem();
     window.leisureToast?.('به سفارش اضافه شد');
@@ -427,7 +583,7 @@
           <div class="cafe-order-row__qty">
             <button type="button" data-sheet-minus="${key}">−</button>
             <b>${faNum(entry.qty)}</b>
-            <button type="button" data-sheet-plus="${key}">＋</button>
+            <button type="button" data-sheet-plus="${key}">+</button>
           </div>
         </div>
       `;
@@ -440,6 +596,7 @@
       cart.set(b.dataset.sheetPlus, obj);
       saveCart();
       updateOrderUI();
+      syncCardQuantity(obj.id);
       renderOrder();
     }));
     document.querySelectorAll('[data-sheet-minus]').forEach(b => b.addEventListener('click', () => {
@@ -450,6 +607,7 @@
       else cart.set(b.dataset.sheetMinus, obj);
       saveCart();
       updateOrderUI();
+      syncCardQuantity(obj.id);
       renderOrder();
     }));
   }
@@ -490,28 +648,51 @@ ${note ? `\nیادداشت: ${note}` : ''}
     window.open(`https://wa.me/${data.meta.whatsapp}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
   }
 
-  document.querySelectorAll('[data-quick-query]').forEach(btn => {
+  quickPillButtons.forEach(btn => {
+    btn.setAttribute('aria-pressed', 'false');
     btn.addEventListener('click', () => {
-      search.value = btn.dataset.quickQuery || '';
+      const query = btn.dataset.quickQuery || '';
+      const togglingOff = normalize(activeQuickQuery) === normalize(query);
+      category = 'all';
+      activeQuickQuery = togglingOff ? '' : query;
+      if (search) search.value = activeQuickQuery;
+      renderTabs();
       render();
-      document.getElementById('cafeMenuGrid')?.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+      requestAnimationFrame(centerActiveCategoryTab);
+      tinyHaptic();
     });
   });
 
-  search?.addEventListener('input', render);
+  search?.addEventListener('input', () => {
+    activeQuickQuery = '';
+    render();
+  });
+  search?.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && search.value) {
+      e.preventDefault();
+      activeQuickQuery = '';
+      search.value = '';
+      render();
+    }
+  });
   clearSearch?.addEventListener('click', () => {
+    activeQuickQuery = '';
     search.value = '';
     search.focus();
     render();
   });
+  menuReset?.addEventListener('click', () => resetFilters({scrollToMenu:false}));
+  emptyReset?.addEventListener('click', () => resetFilters({scrollToMenu:true}));
 
   itemMinus?.addEventListener('click', () => {
     currentQty = Math.max(1, currentQty - 1);
     itemQty.textContent = faNum(currentQty);
+    paintItemAddButton();
   });
   itemPlus?.addEventListener('click', () => {
     currentQty += 1;
     itemQty.textContent = faNum(currentQty);
+    paintItemAddButton();
   });
   itemAdd?.addEventListener('click', addCurrentItem);
   document.querySelectorAll('[data-close-item]').forEach(x => x.addEventListener('click', closeItem));
@@ -522,6 +703,7 @@ ${note ? `\nیادداشت: ${note}` : ''}
     cart.clear();
     saveCart();
     updateOrderUI();
+    syncAllCardQuantities();
     renderOrder();
     window.leisureToast?.('سفارش پاک شد');
   });
@@ -546,10 +728,12 @@ ${note ? `\nیادداشت: ${note}` : ''}
   };
 
   const goCoffee = () => {
-    category = 'hot';
-    search.value = 'قهوه';
+    category = 'coffee';
+    activeQuickQuery = '';
+    if (search) search.value = '';
     renderTabs();
     render();
+    requestAnimationFrame(centerActiveCategoryTab);
     goMenu();
   };
 
@@ -707,7 +891,7 @@ ${note ? `\nیادداشت: ${note}` : ''}
     let dragMoved = false;
 
     tabsWrap.addEventListener('pointerdown', e => {
-      if (e.pointerType === 'touch') return;
+      if (e.pointerType === 'touch' || e.target.closest('button')) return;
       dragActive = true;
       dragMoved = false;
       dragStartX = e.clientX;
@@ -719,7 +903,7 @@ ${note ? `\nیادداشت: ${note}` : ''}
     tabsWrap.addEventListener('pointermove', e => {
       if (!dragActive || e.pointerType === 'touch') return;
       const dx = e.clientX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
+      if (Math.abs(dx) > 8) dragMoved = true;
       tabsWrap.scrollLeft = dragStartScroll - dx;
     });
 
