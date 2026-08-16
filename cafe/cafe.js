@@ -42,6 +42,7 @@
   const floatingCartTotal = document.getElementById('cafeFloatingCartTotal');
   const bottomNav = document.getElementById('cafeMobileBottomNav');
   const categoryFloatShell = document.getElementById('cafeCategoryFloatShell');
+  const categoryFloatAnchor = document.getElementById('cafeCategoryFloatAnchor');
   const mobileStatus = document.getElementById('cafeMobileStatus');
 
   let category = 'all';
@@ -117,31 +118,40 @@
       ? data.items.length
       : data.items.filter(item => item.category === id).length;
 
+    const helperText = {
+      all: 'کل منو',
+      hot: 'گرم',
+      cold: 'خنک',
+      snack: 'خوراکی',
+      dessert: 'شیرین'
+    };
+
     tabsWrap.innerHTML = data.categories.map(c => {
       const active = c.id === category;
       return `
         <button
           type="button"
           data-cafe-category="${c.id}"
-          class="${active ? 'is-active' : ''}"
+          class="cafe-tab ${active ? 'is-active' : ''}"
           aria-pressed="${active}"
+          aria-controls="cafeMenuGrid"
           aria-label="${c.title}، ${countFor(c.id)} آیتم">
-          <span class="cafe-category-tabs__icon" aria-hidden="true">${c.icon}</span>
-          <span class="cafe-category-tabs__label">${c.short}</span>
-          <em class="cafe-category-tabs__count" aria-hidden="true">${faNum(countFor(c.id))}</em>
+          <span class="cafe-tab__icon" aria-hidden="true">${c.icon}</span>
+          <span class="cafe-tab__copy">
+            <b>${c.short}</b>
+            <small>${helperText[c.id] || c.title}</small>
+          </span>
+          <em class="cafe-tab__count" aria-hidden="true">${faNum(countFor(c.id))}</em>
         </button>
       `;
     }).join('');
 
     const buttons = [...tabsWrap.querySelectorAll('[data-cafe-category]')];
-
     buttons.forEach(btn => {
       btn.addEventListener('click', () => {
         category = btn.dataset.cafeCategory;
         renderTabs();
         render();
-
-        // Keep the chosen category clearly visible in the horizontal mobile rail.
         requestAnimationFrame(centerActiveCategoryTab);
       });
     });
@@ -571,56 +581,87 @@ ${note ? `\nیادداشت: ${note}` : ''}
   document.querySelector('[data-mobile-coffee]')?.addEventListener('click', goCoffee);
   document.querySelector('[data-mobile-location]')?.addEventListener('click', goLocation);
 
-  /* App-like scroll behavior:
-     - top app bar hides while scrolling down
-     - returns while scrolling up
-     - category dock moves upward when the app bar hides
-     - floating class engages once the category rail reaches the viewport */
-  if (mobileAppBar && categoryFloatShell) {
+  /* -------------------------------------------------------
+     True floating category tabs
+     ------------------------------------------------------- */
+  if (mobileAppBar && categoryFloatShell && categoryFloatAnchor) {
     let lastY = window.scrollY;
     let ticking = false;
-    const menuTop = () => document.getElementById('cafeMenu')?.offsetTop || 0;
 
-    const paintScrollUI = () => {
-      ticking = false;
-      const y = window.scrollY;
-      const delta = y - lastY;
+    const paintFloatingTabs = () => {
       const mobile = matchMedia('(max-width:760px)').matches;
-      const nearTop = y < 28;
 
       if (!mobile) {
         mobileAppBar.classList.remove('is-hidden');
-        categoryFloatShell.classList.remove('is-appbar-hidden','is-floating','is-compact');
-        lastY = y;
+        categoryFloatShell.classList.remove('is-fixed','is-appbar-hidden','is-floating','is-compact');
+        categoryFloatShell.style.removeProperty('--float-left');
+        categoryFloatShell.style.removeProperty('--float-width');
+        categoryFloatAnchor.style.height = '0px';
+        lastY = window.scrollY;
         return;
       }
 
-      const hideBar = !nearTop && delta > 5;
-      const showBar = delta < -4 || nearTop;
-      if (hideBar) mobileAppBar.classList.add('is-hidden');
-      if (showBar) mobileAppBar.classList.remove('is-hidden');
+      const y = window.scrollY;
+      const delta = y - lastY;
+      const nearTop = y < 24;
 
-      const barHidden = mobileAppBar.classList.contains('is-hidden');
-      categoryFloatShell.classList.toggle('is-appbar-hidden', barHidden);
+      if (!nearTop && delta > 5) mobileAppBar.classList.add('is-hidden');
+      if (delta < -4 || nearTop) mobileAppBar.classList.remove('is-hidden');
 
-      const rect = categoryFloatShell.getBoundingClientRect();
-      const floatThreshold = barHidden ? 8 : 68;
-      const floating = y > menuTop() - 90 && rect.top <= floatThreshold + 5;
-      categoryFloatShell.classList.toggle('is-floating', floating);
-      categoryFloatShell.classList.toggle('is-compact', floating && y > menuTop() + 180);
+      const appBarHidden = mobileAppBar.classList.contains('is-hidden');
+      categoryFloatShell.classList.toggle('is-appbar-hidden', appBarHidden);
+
+      const anchorRect = categoryFloatAnchor.getBoundingClientRect();
+      const menu = document.getElementById('cafeMenu');
+      const menuRect = menu?.getBoundingClientRect();
+      const navHeight = Math.max(54, categoryFloatShell.offsetHeight || 0);
+      const viewportOffset = window.visualViewport?.offsetTop || 0;
+      const desiredTop = (appBarHidden ? 6 : 62) + viewportOffset;
+
+      const shouldFloat = Boolean(
+        menuRect &&
+        anchorRect.top <= desiredTop &&
+        menuRect.bottom > desiredTop + navHeight + 24
+      );
+
+      if (shouldFloat) {
+        const contentShell = menu?.querySelector('.shell');
+        const contentRect = contentShell?.getBoundingClientRect() || anchorRect;
+        const left = Math.max(8, contentRect.left);
+        const width = Math.min(window.innerWidth - 16, contentRect.width);
+
+        categoryFloatShell.style.setProperty('--float-left', `${left}px`);
+        categoryFloatShell.style.setProperty('--float-width', `${width}px`);
+        categoryFloatAnchor.style.height = `${navHeight + 8}px`;
+
+        categoryFloatShell.classList.add('is-fixed','is-floating');
+        categoryFloatShell.classList.toggle(
+          'is-compact',
+          y > (menu?.offsetTop || 0) + 260
+        );
+      } else {
+        categoryFloatShell.classList.remove('is-fixed','is-floating','is-compact');
+        categoryFloatShell.style.removeProperty('--float-left');
+        categoryFloatShell.style.removeProperty('--float-width');
+        categoryFloatAnchor.style.height = '0px';
+      }
 
       lastY = y;
     };
 
-    const requestScrollPaint = () => {
+    const requestFloatingTabsPaint = () => {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(paintScrollUI);
+      requestAnimationFrame(() => {
+        ticking = false;
+        paintFloatingTabs();
+      });
     };
 
-    paintScrollUI();
-    window.addEventListener('scroll', requestScrollPaint, {passive:true});
-    window.addEventListener('resize', requestScrollPaint, {passive:true});
+    paintFloatingTabs();
+    window.addEventListener('scroll', requestFloatingTabsPaint, {passive:true});
+    window.addEventListener('resize', requestFloatingTabsPaint, {passive:true});
+    window.visualViewport?.addEventListener('resize', requestFloatingTabsPaint, {passive:true});
   }
 
   /* -------------------------------------------------------
