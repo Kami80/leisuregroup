@@ -43,12 +43,21 @@
   const bottomNav = document.getElementById('cafeMobileBottomNav');
   const categoryFloatShell = document.getElementById('cafeCategoryFloatShell');
   const mobileStatus = document.getElementById('cafeMobileStatus');
+  const menuContextText = document.getElementById('cafeMenuContextText');
+  const menuReset = document.getElementById('cafeMenuReset');
+  const emptyReset = document.getElementById('cafeEmptyReset');
+  const undoToast = document.getElementById('cafeUndoToast');
+  const undoText = document.getElementById('cafeUndoText');
+  const undoButton = document.getElementById('cafeUndoButton');
 
   let category = 'all';
   let currentItem = null;
   let currentQty = 1;
   let currentLine = '';
   const cart = new Map();
+  let categorySpy = null;
+  let lastUndo = null;
+  let undoTimer = null;
   const cartStorageKey = 'leisure-cafe-cart-v2';
 
   const saveCart = () => {
@@ -87,6 +96,58 @@
   const normalize = s => (s || '').toString().toLowerCase().replace(/[ي]/g,'ی').replace(/[ك]/g,'ک').replace(/\s+/g,' ').trim();
   const categoryInfo = id => data.categories.find(c => c.id === id) || {title:'کافه', icon:'✦'};
   const cartKey = (id, line='') => `${id}::${line || ''}`;
+  const itemCartQty = id => [...cart.values()]
+    .filter(entry => entry.id === id)
+    .reduce((sum, entry) => sum + Number(entry.qty || 0), 0);
+
+  const setActiveTabVisual = id => {
+    const buttons = [...tabsWrap.querySelectorAll('[data-cafe-category]')];
+    buttons.forEach(btn => {
+      const active = btn.dataset.cafeCategory === id;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+    const activeBtn = tabsWrap.querySelector(`[data-cafe-category="${id}"]`);
+    activeBtn?.scrollIntoView({
+      behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+      block: 'nearest',
+      inline: 'center'
+    });
+  };
+
+  const updateMenuContext = list => {
+    const q = normalize(search?.value);
+    const cat = categoryInfo(category);
+    const label = category === 'all' ? 'همه منو' : cat.title;
+    if (menuContextText) {
+      menuContextText.textContent = q
+        ? `${label} · ${faNum(list.length)} نتیجه برای «${search.value.trim()}»`
+        : `${label} · ${faNum(list.length)} آیتم`;
+    }
+    if (menuReset) menuReset.hidden = category === 'all' && !q;
+  };
+
+  const resetMenuFilters = () => {
+    category = 'all';
+    if (search) search.value = '';
+    document.querySelectorAll('[data-quick-query]').forEach(x => x.classList.remove('is-active'));
+    renderTabs();
+    render();
+  };
+
+  const showUndo = (message, action) => {
+    if (!undoToast) return;
+    lastUndo = action;
+    undoText.textContent = message;
+    undoToast.hidden = false;
+    requestAnimationFrame(() => undoToast.classList.add('is-visible'));
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(() => {
+      undoToast.classList.remove('is-visible');
+      setTimeout(() => { undoToast.hidden = true; }, 220);
+      lastUndo = null;
+    }, 4200);
+  };
 
   function renderTabs() {
     const countFor = id => id === 'all'
@@ -117,13 +178,14 @@
         renderTabs();
         render();
 
-        // Keep the chosen category clearly visible in the horizontal mobile rail.
         requestAnimationFrame(() => {
-          tabsWrap.querySelector('[aria-pressed="true"]')?.scrollIntoView({
-            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-            block: 'nearest',
-            inline: 'center'
-          });
+          setActiveTabVisual(category);
+          if (matchMedia('(max-width:760px)').matches) {
+            document.getElementById('cafeMenuGrid')?.scrollIntoView({
+              behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+              block: 'start'
+            });
+          }
         });
       });
     });
@@ -191,12 +253,26 @@
 
   function card(item, idx) {
     const cat = categoryInfo(item.category);
+    const inCart = itemCartQty(item.id);
+    const control = item.coffeeBase
+      ? `<button class="cafe-menu-card__choose-line" type="button" data-open-coffee="${item.id}">
+           <span>${inCart ? `${faNum(inCart)} در سفارش` : 'انتخاب لاین'}</span><b>←</b>
+         </button>`
+      : inCart
+        ? `<div class="cafe-card-stepper" aria-label="تعداد ${item.name} در سفارش">
+             <button type="button" data-card-minus="${item.id}" aria-label="کم کردن ${item.name}">−</button>
+             <b>${faNum(inCart)}</b>
+             <button type="button" data-card-plus="${item.id}" aria-label="اضافه کردن ${item.name}">＋</button>
+           </div>`
+        : `<button class="cafe-menu-card__quickadd" type="button" data-card-plus="${item.id}" aria-label="افزودن ${item.name}">＋</button>`;
+
     return `
-      <article class="cafe-menu-card" data-menu-open="${item.id}" data-category="${item.category}" tabindex="0" data-reveal style="--d:${idx}">
+      <article class="cafe-menu-card ${inCart ? 'has-cart-item' : ''}" data-menu-open="${item.id}" data-category="${item.category}" tabindex="0" data-reveal style="--d:${idx}">
         <div class="cafe-menu-card__image">
           <img src="../${item.imageThumb || item.image}" alt="${item.name}" loading="lazy" decoding="async">
           <span class="cafe-menu-card__price">${item.coffeeBase ? `از ${money(item.price)}` : money(item.price)}</span>
           <span class="cafe-menu-card__category"><b>${cat.icon}</b>${cat.title}</span>
+          ${inCart ? `<span class="cafe-menu-card__cartbadge">✓ ${faNum(inCart)}</span>` : ''}
         </div>
         <div class="cafe-menu-card__body">
           <div class="cafe-menu-card__title">
@@ -209,11 +285,8 @@
             ${item.coffeeBase ? '<span>۷۰/۳۰</span><span>۱۰۰٪ عربیکا</span>' : ''}
           </div>
           <div class="cafe-menu-card__foot">
-            <span class="cafe-menu-card__hint">جزئیات و انتخاب${item.coffeeBase ? ' لاین قهوه' : ''}</span>
-            <div class="cafe-menu-card__actions">
-              <span class="cafe-menu-card__cta">مشاهده ←</span>
-              <button class="cafe-menu-card__quickadd" type="button" data-quick-add="${item.id}" aria-label="افزودن سریع ${item.name}">＋</button>
-            </div>
+            <button class="cafe-menu-card__details" type="button" data-card-details="${item.id}">جزئیات</button>
+            <div class="cafe-menu-card__actions">${control}</div>
           </div>
         </div>
       </article>
@@ -221,33 +294,61 @@
   }
 
   function bindCards() {
-    grid.querySelectorAll('[data-quick-add]').forEach(btn => {
+    grid.querySelectorAll('[data-card-plus]').forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();
         e.stopPropagation();
-        const item = byId[btn.dataset.quickAdd];
+        const item = byId[btn.dataset.cardPlus];
         if (!item) return;
-        const line = item.coffeeBase ? (item.lines?.[0] || '') : '';
-        const key = cartKey(item.id, line);
-        const existing = cart.get(key) || {id:item.id, qty:0, line};
+        const key = cartKey(item.id, '');
+        const existing = cart.get(key) || {id:item.id, qty:0, line:''};
         existing.qty += 1;
         cart.set(key, existing);
         saveCart();
-        updateOrderUI();
         tinyHaptic();
-        window.leisureToast?.(`${item.name} به سفارش اضافه شد`);
-        btn.classList.add('is-added');
-        setTimeout(() => btn.classList.remove('is-added'), 420);
+        showUndo(`${item.name} به سفارش اضافه شد`, {type:'minus', key, qty:1});
+        updateOrderUI();
+        render();
+      });
+    });
+
+    grid.querySelectorAll('[data-card-minus]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const item = byId[btn.dataset.cardMinus];
+        if (!item) return;
+        const key = cartKey(item.id, '');
+        const existing = cart.get(key);
+        if (!existing) return;
+        existing.qty -= 1;
+        if (existing.qty <= 0) cart.delete(key);
+        else cart.set(key, existing);
+        saveCart();
+        tinyHaptic();
+        updateOrderUI();
+        render();
+      });
+    });
+
+    grid.querySelectorAll('[data-open-coffee],[data-card-details]').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        openItem(btn.dataset.openCoffee || btn.dataset.cardDetails);
       });
     });
 
     grid.querySelectorAll('[data-menu-open]').forEach(node => {
-      const open = () => openItem(node.dataset.menuOpen);
+      const open = e => {
+        if (e?.target?.closest('button')) return;
+        openItem(node.dataset.menuOpen);
+      };
       node.addEventListener('click', open);
       node.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') {
+        if ((e.key === 'Enter' || e.key === ' ') && !e.target.closest('button')) {
           e.preventDefault();
-          open();
+          openItem(node.dataset.menuOpen);
         }
       });
     });
@@ -276,7 +377,24 @@
     grid.innerHTML = html;
     count.textContent = `${faNum(list.length)} آیتم`;
     empty.classList.toggle('is-visible', !list.length);
+    updateMenuContext(list);
     bindCards();
+
+    categorySpy?.disconnect();
+    categorySpy = null;
+    if (category === 'all' && !normalize(search?.value) && 'IntersectionObserver' in window) {
+      const dividers = [...grid.querySelectorAll('[data-menu-divider]')];
+      categorySpy = new IntersectionObserver(entries => {
+        const visible = entries
+          .filter(entry => entry.isIntersecting)
+          .sort((a,b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
+        if (visible.length) setActiveTabVisual(visible[0].target.dataset.menuDivider);
+      }, {rootMargin:'-22% 0px -68% 0px', threshold:[0,.01,.2]});
+      dividers.forEach(divider => categorySpy.observe(divider));
+    } else {
+      setActiveTabVisual(category);
+    }
+
     window.LeisureMotion?.refresh?.();
   }
 
@@ -306,6 +424,10 @@
       currentItem.coffeeBase ? '<span>لاین قهوه قابل انتخاب</span>' : ''
     ].join('');
     itemQty.textContent = faNum(currentQty);
+    if (itemAdd) {
+      const unit = itemUnitPrice(currentItem, currentLine);
+      itemAdd.textContent = `افزودن · ${money(unit * currentQty)}`;
+    }
 
     if (currentItem.coffeeBase && currentItem.lines?.length) {
       itemLines.hidden = false;
@@ -341,10 +463,11 @@
     existing.line = currentLine;
     cart.set(key, existing);
     saveCart();
+    showUndo(`${currentItem.name} × ${faNum(currentQty)} به سفارش اضافه شد`, {type:'minus', key, qty:currentQty});
     updateOrderUI();
     tinyHaptic();
     closeItem();
-    window.leisureToast?.('به سفارش اضافه شد');
+    render();
   }
 
   function totalQty() {
@@ -400,7 +523,7 @@
           <div>
             <strong>${item.name}</strong>
             <small>${categoryInfo(item.category).title}${entry.line ? ` · ${entry.line}` : ''}</small>
-            <div class="cafe-order-row__price">${money(itemUnitPrice(item, entry.line))}</div>
+            <div class="cafe-order-row__price">${entry.qty > 1 ? `${faNum(entry.qty)} × ${money(itemUnitPrice(item, entry.line))} = ` : ""}${money(itemUnitPrice(item, entry.line) * entry.qty)}</div>
           </div>
           <div class="cafe-order-row__qty">
             <button type="button" data-sheet-minus="${key}">−</button>
@@ -419,6 +542,7 @@
       saveCart();
       updateOrderUI();
       renderOrder();
+      render();
     }));
     document.querySelectorAll('[data-sheet-minus]').forEach(b => b.addEventListener('click', () => {
       const obj = cart.get(b.dataset.sheetMinus);
@@ -429,6 +553,7 @@
       saveCart();
       updateOrderUI();
       renderOrder();
+      render();
     }));
   }
 
@@ -470,26 +595,54 @@ ${note ? `\nیادداشت: ${note}` : ''}
 
   document.querySelectorAll('[data-quick-query]').forEach(btn => {
     btn.addEventListener('click', () => {
-      search.value = btn.dataset.quickQuery || '';
+      const wasActive = btn.classList.contains('is-active');
+      document.querySelectorAll('[data-quick-query]').forEach(x => x.classList.remove('is-active'));
+      if (wasActive) {
+        search.value = '';
+      } else {
+        btn.classList.add('is-active');
+        search.value = btn.dataset.quickQuery || '';
+        category = 'all';
+        renderTabs();
+      }
       render();
-      document.getElementById('cafeMenuGrid')?.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
+      document.getElementById('cafeMenuGrid')?.scrollIntoView({
+        behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+        block: 'start'
+      });
     });
   });
 
-  search?.addEventListener('input', render);
+  let searchTimer = null;
+  search?.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(render, 70);
+  });
+  search?.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      search.value = '';
+      render();
+      search.blur();
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      grid.querySelector('[data-menu-open]')?.focus();
+    }
+  });
   clearSearch?.addEventListener('click', () => {
     search.value = '';
+    document.querySelectorAll('[data-quick-query]').forEach(x => x.classList.remove('is-active'));
     search.focus();
     render();
   });
 
   itemMinus?.addEventListener('click', () => {
     currentQty = Math.max(1, currentQty - 1);
-    itemQty.textContent = faNum(currentQty);
+    paintItem();
   });
   itemPlus?.addEventListener('click', () => {
     currentQty += 1;
-    itemQty.textContent = faNum(currentQty);
+    paintItem();
   });
   itemAdd?.addEventListener('click', addCurrentItem);
   document.querySelectorAll('[data-close-item]').forEach(x => x.addEventListener('click', closeItem));
@@ -501,6 +654,7 @@ ${note ? `\nیادداشت: ${note}` : ''}
     saveCart();
     updateOrderUI();
     renderOrder();
+    render();
     window.leisureToast?.('سفارش پاک شد');
   });
   sendOrder?.addEventListener('click', sendWhatsapp);
@@ -611,6 +765,29 @@ ${note ? `\nیادداشت: ${note}` : ''}
     window.addEventListener('resize', requestScrollPaint, {passive:true});
   }
 
+  menuReset?.addEventListener('click', resetMenuFilters);
+  emptyReset?.addEventListener('click', resetMenuFilters);
+
+  undoButton?.addEventListener('click', () => {
+    if (!lastUndo) return;
+    if (lastUndo.type === 'minus') {
+      const entry = cart.get(lastUndo.key);
+      if (entry) {
+        entry.qty -= Number(lastUndo.qty || 1);
+        if (entry.qty <= 0) cart.delete(lastUndo.key);
+        else cart.set(lastUndo.key, entry);
+      }
+    }
+    saveCart();
+    updateOrderUI();
+    render();
+    undoToast.classList.remove('is-visible');
+    setTimeout(() => { undoToast.hidden = true; }, 180);
+    lastUndo = null;
+    clearTimeout(undoTimer);
+    tinyHaptic();
+  });
+
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
       if (!itemSheet.hidden) closeItem();
@@ -619,6 +796,52 @@ ${note ? `\nیادداشت: ${note}` : ''}
   });
 
   restoreCart();
+
+  /* -------------------------------------------------------
+     Category rail pointer-drag
+     Touch uses native scrolling; this enhances mouse/pen.
+     ------------------------------------------------------- */
+  if (tabsWrap) {
+    let dragActive = false;
+    let dragStartX = 0;
+    let dragStartScroll = 0;
+    let dragMoved = false;
+
+    tabsWrap.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch') return;
+      dragActive = true;
+      dragMoved = false;
+      dragStartX = e.clientX;
+      dragStartScroll = tabsWrap.scrollLeft;
+      tabsWrap.classList.add('is-dragging');
+      tabsWrap.setPointerCapture?.(e.pointerId);
+    });
+
+    tabsWrap.addEventListener('pointermove', e => {
+      if (!dragActive || e.pointerType === 'touch') return;
+      const dx = e.clientX - dragStartX;
+      if (Math.abs(dx) > 4) dragMoved = true;
+      tabsWrap.scrollLeft = dragStartScroll - dx;
+    });
+
+    const stopCategoryDrag = e => {
+      if (!dragActive) return;
+      dragActive = false;
+      tabsWrap.classList.remove('is-dragging');
+      try { tabsWrap.releasePointerCapture?.(e.pointerId); } catch {}
+    };
+
+    tabsWrap.addEventListener('pointerup', stopCategoryDrag);
+    tabsWrap.addEventListener('pointercancel', stopCategoryDrag);
+
+    tabsWrap.addEventListener('click', e => {
+      if (!dragMoved) return;
+      e.preventDefault();
+      e.stopPropagation();
+      dragMoved = false;
+    }, true);
+  }
+
   renderTabs();
   renderGallery();
   render();

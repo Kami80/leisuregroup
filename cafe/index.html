@@ -27,9 +27,8 @@
 </div>
 <header class="site-header">
 <div class="shell nav-wrap">
-<a class="brand" href="../index.html">
-<img alt="" class="brand__mark" src="../assets/brand/logo-symbol.svg"/>
-<span class="brand__type"><strong>انجمن اوقات فراغت اصفهان</strong><small>LEISURE SOCIETY</small></span>
+<a class="brand brand--official" href="../index.html">
+<img alt="انجمن اوقات فراغت اصفهان — Leisure Society" class="brand__official-logo" decoding="async" loading="eager" src="../assets/brand/leisure-official-logo.webp"/>
 </a>
 <button aria-expanded="false" aria-label="باز کردن منو" class="menu-toggle" type="button"><span></span><span></span><span></span></button>
 <nav class="main-nav">
@@ -125,7 +124,7 @@
 <b id="cafeResultCount">۰ آیتم</b>
 </div>
 </div>
-<div class="cafe-category-float-shell" id="cafeCategoryFloatShell"><nav aria-label="دسته‌بندی منوی کافه" class="cafe-category-tabs" id="cafeCategoryTabs"></nav></div>
+<div class="cafe-category-float-shell" id="cafeCategoryFloatShell"><nav aria-label="دسته‌بندی منوی کافه" class="cafe-category-tabs" id="cafeCategoryTabs"></nav></div><div aria-live="polite" class="cafe-menu-context" id="cafeMenuContext"><span id="cafeMenuContextText">همه آیتم‌ها</span><button class="cafe-menu-context__reset" hidden="" id="cafeMenuReset" type="button">پاک کردن فیلتر</button></div>
 <div class="cafe-menu-layout">
 <aside class="cafe-menu-side">
 <div class="cafe-side-card">
@@ -150,7 +149,7 @@
 <div class="cafe-empty" id="cafeEmpty">
 <strong>چیزی پیدا نشد.</strong>
 <p>یک عبارت کوتاه‌تر یا دسته دیگری امتحان کن.</p>
-</div>
+<button class="btn btn--ghost cafe-empty__reset" id="cafeEmptyReset" type="button">نمایش همه منو</button></div>
 </div>
 </div>
 </div>
@@ -233,7 +232,7 @@
 </div>
 <footer class="site-footer">
 <div class="shell footer-grid">
-<div class="footer-brand"><a class="brand brand--footer" href="../index.html"><img alt="" class="brand__mark" src="../assets/brand/logo-symbol.svg"/><span class="brand__type"><strong>انجمن اوقات فراغت اصفهان</strong><small>LEISURE SOCIETY</small></span></a><p>یک نوشیدنی خوب، یک بازی خوب، یک میز خوب.</p></div>
+<div class="footer-brand"><a class="brand brand--footer brand--official" href="../index.html"><img alt="انجمن اوقات فراغت اصفهان — Leisure Society" class="brand__official-logo" decoding="async" loading="eager" src="../assets/brand/leisure-official-logo.webp"/></a><p>یک نوشیدنی خوب، یک بازی خوب، یک میز خوب.</p></div>
 <div><h3>کافه</h3><a href="#cafeMenu">منو</a><a href="tel:09124723863">تماس</a><a href="../contact/index.html#branch-apadana">آپادانا</a></div>
 <div><h3>Leisure</h3><a href="../games/index.html">بازی‌ها</a><a href="../events/index.html">رویدادها</a><a href="../community/index.html">کامیونیتی</a></div>
 <div><h3>اطلاعات</h3><a href="../discover/index.html">شهرگردی</a><a href="../about/index.html">درباره ما</a><a href="../contact/index.html">تماس</a></div>
@@ -260,7 +259,10 @@
 <button data-bottom-action="location" type="button">
 <span>⌖</span><small>مسیر</small>
 </button>
-</nav><script src="../cafe-menu-data.js"></script>
+</nav><div aria-live="polite" class="cafe-undo-toast" hidden="" id="cafeUndoToast">
+<span id="cafeUndoText">به سفارش اضافه شد</span>
+<button id="cafeUndoButton" type="button">برگردان</button>
+</div><script src="../cafe-menu-data.js"></script>
 <script src="../app.js"></script>
 <script src="cafe.js"></script>
 </body>
