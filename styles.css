@@ -6085,3 +6085,438 @@ body{
     transition:none!important;
   }
 }
+
+
+/* =========================================================
+   CAFE CATEGORY NAV — MOBILE TOUCH / SWIPE SCROLL
+   ========================================================= */
+@media(max-width:760px){
+  .cafe-category-float-shell{
+    overflow:visible!important;
+  }
+
+  .cafe-category-float-shell .cafe-category-tabs,
+  #cafeCategoryTabs{
+    display:flex!important;
+    flex-wrap:nowrap!important;
+    justify-content:flex-start!important;
+    align-items:center!important;
+
+    width:100%!important;
+    max-width:100%!important;
+
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+
+    /* Native finger swipe + iOS momentum */
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-x pan-y;
+    overscroll-behavior-x:contain;
+
+    /* Smooth but not forced snapping */
+    scroll-snap-type:x proximity;
+    scroll-padding-inline:12px;
+
+    /* Keep rail visually clean */
+    scrollbar-width:none;
+    -ms-overflow-style:none;
+
+    /* Prevent browser from selecting text during a swipe */
+    user-select:none;
+    -webkit-user-select:none;
+
+    /* Enough inner edge room so first/last pills are easy to grab */
+    padding-inline:8px!important;
+    padding-block:6px!important;
+    gap:7px!important;
+  }
+
+  .cafe-category-float-shell .cafe-category-tabs::-webkit-scrollbar,
+  #cafeCategoryTabs::-webkit-scrollbar{
+    display:none;
+    width:0;
+    height:0;
+  }
+
+  .cafe-category-tabs > button{
+    flex:0 0 auto!important;
+    scroll-snap-align:center;
+    scroll-snap-stop:normal;
+    white-space:nowrap;
+  }
+
+  /* subtle edge fades hint that the rail can be swiped */
+  .cafe-category-float-shell{
+    -webkit-mask-image:linear-gradient(
+      90deg,
+      transparent 0,
+      #000 10px,
+      #000 calc(100% - 10px),
+      transparent 100%
+    );
+    mask-image:linear-gradient(
+      90deg,
+      transparent 0,
+      #000 10px,
+      #000 calc(100% - 10px),
+      transparent 100%
+    );
+  }
+
+  /* Do not mask the sticky shell while a category rail is actively focused */
+  .cafe-category-float-shell:focus-within{
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+}
+
+/* Mouse / trackpad users on desktop can also drag the rail naturally */
+#cafeCategoryTabs{
+  cursor:grab;
+}
+#cafeCategoryTabs.is-dragging{
+  cursor:grabbing;
+  scroll-snap-type:none!important;
+}
+
+
+/* =========================================================
+   CAFE MENU — FINAL UX ENHANCEMENT
+   ========================================================= */
+
+/* Context line makes filters/search state explicit. */
+.cafe-menu-context{
+  min-height:38px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:4px 0 12px;
+  padding:7px 10px;
+  border:1.5px dashed rgba(16,38,59,.5);
+  border-radius:8px;
+  background:rgba(255,249,237,.72);
+  color:var(--muted);
+  font-size:9px;
+}
+.cafe-menu-context>span{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cafe-menu-context__reset{
+  flex:none;
+  border:0;
+  background:transparent;
+  color:var(--coral);
+  font:inherit;
+  font-weight:900;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.cafe-menu-context__reset[hidden]{display:none}
+
+/* Quick intent filters communicate their toggled state. */
+.cafe-quick-pills button.is-active{
+  background:var(--yellow)!important;
+  color:var(--ink)!important;
+  box-shadow:3px 3px 0 var(--ink);
+  transform:translateY(-1px);
+}
+
+/* Menu cards now expose cart state instead of hiding it. */
+.cafe-menu-card.has-cart-item{
+  box-shadow:6px 6px 0 var(--teal);
+}
+.cafe-menu-card__cartbadge{
+  position:absolute;
+  z-index:5;
+  right:10px;
+  bottom:10px;
+  min-width:34px;
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  padding:0 8px;
+  border:2px solid var(--ink);
+  border-radius:999px;
+  background:var(--teal);
+  color:var(--ink);
+  box-shadow:2px 2px 0 var(--ink);
+  font-size:9px;
+  font-weight:900;
+}
+.cafe-menu-card__details{
+  min-height:34px;
+  padding:4px 9px;
+  border:0;
+  background:transparent;
+  color:var(--muted);
+  font-size:9px;
+  font-weight:900;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+.cafe-menu-card__actions{
+  margin-right:auto;
+}
+.cafe-menu-card__choose-line{
+  min-height:36px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:5px 10px;
+  border:1.5px solid var(--ink);
+  border-radius:8px;
+  background:var(--yellow);
+  color:var(--ink);
+  box-shadow:2px 2px 0 var(--ink);
+  font-size:9px;
+  font-weight:900;
+}
+.cafe-menu-card__choose-line b{
+  font-size:15px;
+  line-height:1;
+}
+.cafe-card-stepper{
+  display:grid;
+  grid-template-columns:32px 26px 32px;
+  align-items:center;
+  justify-content:end;
+  gap:4px;
+  direction:ltr;
+}
+.cafe-card-stepper button{
+  width:32px;
+  height:32px;
+  display:grid;
+  place-items:center;
+  padding:0;
+  border:1.5px solid var(--ink);
+  border-radius:8px;
+  background:#FFF9ED;
+  color:var(--ink);
+  box-shadow:2px 2px 0 var(--ink);
+  font-size:15px;
+  font-weight:900;
+}
+.cafe-card-stepper button:last-child{
+  background:var(--yellow);
+}
+.cafe-card-stepper b{
+  text-align:center;
+  font-size:11px;
+}
+
+/* Undo snackbar — prevents accidental cart additions from feeling costly. */
+.cafe-undo-toast{
+  position:fixed;
+  z-index:18000;
+  right:50%;
+  bottom:26px;
+  width:min(440px,calc(100% - 28px));
+  min-height:50px;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:10px;
+  padding:8px 10px 8px 14px;
+  border:2px solid rgba(255,249,237,.7);
+  border-radius:12px;
+  background:rgba(16,38,59,.94);
+  color:var(--cream-2);
+  -webkit-backdrop-filter:blur(18px) saturate(1.12);
+  backdrop-filter:blur(18px) saturate(1.12);
+  box-shadow:5px 5px 0 var(--coral),0 18px 38px rgba(16,38,59,.2);
+  opacity:0;
+  transform:translate(50%,18px);
+  pointer-events:none;
+  transition:opacity .2s ease,transform .28s var(--ease-out);
+}
+.cafe-undo-toast.is-visible{
+  opacity:1;
+  transform:translate(50%,0);
+  pointer-events:auto;
+}
+.cafe-undo-toast>span{
+  font-size:10px;
+  font-weight:800;
+}
+.cafe-undo-toast button{
+  min-height:34px;
+  padding:5px 10px;
+  border:1.5px solid var(--ink);
+  border-radius:7px;
+  background:var(--yellow);
+  color:var(--ink);
+  box-shadow:2px 2px 0 var(--coral);
+  font-size:9px;
+  font-weight:900;
+}
+
+/* Empty state gets a clear recovery action. */
+.cafe-empty__reset{
+  margin-top:14px;
+}
+
+/* Order rows reveal actual line total at a glance. */
+.cafe-order-row__price{
+  font-weight:800;
+}
+
+/* Product popup action feels transactional rather than generic. */
+.cafe-item-sheet__add{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  white-space:nowrap;
+}
+
+/* Search state is easier to perceive. */
+.cafe-search:focus-within{
+  box-shadow:6px 7px 0 var(--teal);
+  transform:translateY(-1px);
+}
+
+/* Active category remains visually clear during scroll-spy. */
+.cafe-category-tabs button[aria-pressed="true"]{
+  position:relative;
+}
+.cafe-category-tabs button[aria-pressed="true"]::after{
+  content:"";
+  position:absolute;
+  right:16%;
+  left:16%;
+  bottom:-5px;
+  height:3px;
+  border-radius:99px;
+  background:var(--ink);
+}
+
+/* Desktop hover/press polish */
+@media(hover:hover){
+  .cafe-menu-card__details:hover{
+    color:var(--ink);
+  }
+  .cafe-menu-card__choose-line:hover,
+  .cafe-card-stepper button:hover,
+  .cafe-undo-toast button:hover{
+    transform:translateY(-1px);
+    box-shadow:3px 3px 0 var(--ink);
+  }
+}
+
+@media(max-width:760px){
+  /* Context is compact and follows the rail without becoming another glass panel. */
+  .cafe-menu-context{
+    min-height:31px;
+    margin:0 0 9px;
+    padding:5px 7px;
+    border:0;
+    border-bottom:1px dashed rgba(16,38,59,.38);
+    border-radius:0;
+    background:transparent;
+    font-size:8px;
+  }
+
+  .cafe-menu-card.has-cart-item{
+    box-shadow:4px 4px 0 var(--teal)!important;
+  }
+  .cafe-menu-card__cartbadge{
+    right:7px;
+    bottom:7px;
+    min-width:29px;
+    height:23px;
+    padding-inline:6px;
+    border-width:1.5px;
+    font-size:7px;
+    box-shadow:1px 1px 0 var(--ink);
+  }
+
+  .cafe-menu-card__foot{
+    min-height:36px;
+  }
+  .cafe-menu-card__details{
+    min-height:30px;
+    padding:3px 5px;
+    font-size:7px;
+  }
+  .cafe-menu-card__choose-line{
+    min-height:31px;
+    max-width:100%;
+    padding:4px 7px;
+    gap:5px;
+    border-radius:7px;
+    font-size:7px;
+    box-shadow:1px 1px 0 var(--ink);
+  }
+  .cafe-menu-card__choose-line b{
+    font-size:12px;
+  }
+
+  .cafe-card-stepper{
+    grid-template-columns:27px 22px 27px;
+    gap:3px;
+  }
+  .cafe-card-stepper button{
+    width:27px;
+    height:27px;
+    border-radius:7px;
+    box-shadow:1px 1px 0 var(--ink);
+    font-size:13px;
+  }
+  .cafe-card-stepper b{
+    font-size:9px;
+  }
+
+  /* Snackbar sits above bottom navigation + floating cart. */
+  .cafe-undo-toast{
+    bottom:calc(142px + env(safe-area-inset-bottom));
+    min-height:46px;
+    border-radius:12px;
+    padding:7px 8px 7px 11px;
+  }
+  .cafe-undo-toast>span{
+    font-size:9px;
+  }
+  .cafe-undo-toast button{
+    min-height:31px;
+    font-size:8px;
+  }
+
+  /* Make cart rows more compact without losing tap targets. */
+  .cafe-order-row{
+    border-radius:9px;
+  }
+
+  /* Search bar remains an easy target when the bottom-nav search action jumps here. */
+  .cafe-search input{
+    font-size:14px!important;
+  }
+}
+
+@media(max-width:390px){
+  .cafe-card-stepper{
+    grid-template-columns:25px 18px 25px;
+  }
+  .cafe-card-stepper button{
+    width:25px;
+    height:25px;
+  }
+  .cafe-menu-card__details{
+    display:none;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .cafe-undo-toast,
+  .cafe-menu-card__choose-line,
+  .cafe-card-stepper button{
+    transition:none!important;
+  }
+}
